@@ -55,7 +55,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-900 text-white flex flex-col gap-8">
+    <main className="min-h-screen bg-gray-900 text-white flex flex-col gap-0">
       <Navbar onSearch={handleSearch} />
 
       {/* 🎥 Hero Carousel for Trending Movies */}

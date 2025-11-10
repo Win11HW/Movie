@@ -9,7 +9,7 @@ interface NavbarProps {
 
 export default function Navbar({ onSearch }: NavbarProps) {
   return (
-    <nav className="flex flex-col md:flex-row items-center justify-between bg-gray-800 px-6 py-4 rounded-md mb-6 gap-4 md:gap-0">
+    <nav className="flex flex-col md:flex-row items-center justify-between bg-gray-800 px-6 py-4 rounded-md mx-4 md:mx-8 gap-4 md:gap-0">
       {/* Logo on the left */}
       <div className="text-2xl font-bold text-white">
         <Link href="/">🎬 Movie DB</Link>
