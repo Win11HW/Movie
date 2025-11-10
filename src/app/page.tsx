@@ -1,16 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  getTrendingMovies,
-  getTopRatedMovies,
-  getTrendingTV,
-  getTopRatedTV,
-  searchMovies,
-} from "@/lib/tmdb";
+import { getTrendingMovies, getTopRatedMovies, getTrendingTV, getTopRatedTV, searchMovies } from "@/lib/tmdb";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
@@ -32,7 +27,6 @@ export default function HomePage() {
       setTrendingTV(trendT);
       setTopRatedTV(topT);
     }
-
     fetchData();
   }, []);
 
@@ -46,7 +40,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-900 text-white p-6 flex flex-col">
+    <main className="min-h-screen bg-gray-900 text-white p-6 flex flex-col gap-8">
       <Navbar onSearch={handleSearch} />
 
       {searchResults ? (
@@ -60,10 +54,10 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          <Section title="Trending Movies" items={trendingMovies} />
-          <Section title="Top Rated Movies" items={topRatedMovies} />
-          <Section title="Trending TV" items={trendingTV} />
-          <Section title="Top Rated TV" items={topRatedTV} />
+          <CarouselSection title="🎬 Trending Movies" items={trendingMovies} />
+          <CarouselSection title="⭐ Top Rated Movies" items={topRatedMovies} />
+          <CarouselSection title="📺 Trending TV" items={trendingTV} />
+          <CarouselSection title="🏆 Top Rated TV" items={topRatedTV} />
         </>
       )}
 
@@ -72,15 +66,31 @@ export default function HomePage() {
   );
 }
 
-function Section({ title, items }: { title: string; items: any[] }) {
+// ✅ Section Component using Carousel
+function CarouselSection({ title, items }: { title: string; items: any[] }) {
   return (
-    <section className="mb-10">
-      <h2 className="text-2xl font-bold mb-4">{title}</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {items.map((item) => (
-          <MovieCard key={item.id} {...item} />
-        ))}
-      </div>
+    <section className="space-y-4">
+      <h2 className="text-2xl font-bold">{title}</h2>
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="w-full"
+      >
+        <CarouselContent>
+          {items.map((item) => (
+            <CarouselItem
+              key={item.id}
+              className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+            >
+              <MovieCard {...item} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </section>
   );
 }
