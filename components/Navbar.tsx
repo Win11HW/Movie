@@ -9,28 +9,27 @@ interface NavbarProps {
 
 export default function Navbar({ onSearch }: NavbarProps) {
   return (
-    <nav className="flex flex-col md:flex-row md:items-center justify-between bg-gray-800 px-6 py-4 rounded-md mb-6 gap-4 md:gap-0">
-      {/* Logo + Links */}
-      <div className="flex items-center justify-between w-full md:w-auto">
-        <Link href="/" className="text-2xl font-bold text-white">
-          🎬 Movie DB
-        </Link>
-
-        <div className="flex gap-4 md:ml-6">
-          <Link href="/" className="hover:text-blue-400 text-white">
-            Home
-          </Link>
-          <Link href="/about" className="hover:text-blue-400 text-white">
-            About
-          </Link>
-          <Link href="/contact" className="hover:text-blue-400 text-white">
-            Contact
-          </Link>
-        </div>
+    <nav className="flex flex-col md:flex-row items-center justify-between bg-gray-800 px-6 py-4 rounded-md mb-6 gap-4 md:gap-0">
+      {/* Logo on the left */}
+      <div className="text-2xl font-bold text-white">
+        <Link href="/">🎬 Movie DB</Link>
       </div>
 
-      {/* SearchBar inside Navbar */}
-      <div className="flex justify-center md:justify-end w-full md:w-auto bg-transparent">
+      {/* Centered Links */}
+      <div className="flex gap-8 mx-auto">
+        <Link href="/" className="hover:text-blue-400 text-white">
+          Home
+        </Link>
+        <Link href="/about" className="hover:text-blue-400 text-white">
+          About
+        </Link>
+        <Link href="/contact" className="hover:text-blue-400 text-white">
+          Contact
+        </Link>
+      </div>
+
+      {/* SearchBar on the right */}
+      <div className="flex justify-end w-full md:w-auto">
         <SearchBar onSearch={onSearch} />
       </div>
     </nav>
