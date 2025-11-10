@@ -30,7 +30,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
       </div>
 
       {/* SearchBar inside Navbar */}
-      <div className="flex justify-center md:justify-end w-full md:w-auto">
+      <div className="flex justify-center md:justify-end w-full md:w-auto bg-transparent">
         <SearchBar onSearch={onSearch} />
       </div>
     </nav>

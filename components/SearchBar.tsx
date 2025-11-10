@@ -17,17 +17,19 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
+      {/* Search input */}
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search movies..."
-        className="px-3 py-1.5 rounded-md text-black w-64"
+        className="px-6 py-2 w-64 rounded-full border border-white bg-transparent text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
       />
+
+      {/* Submit button */}
       <button
         type="submit"
         disabled={isPending}
-        className="px-4 py-1.5 bg-blue-600 rounded-md text-white disabled:opacity-60"
-      >
+        className="px-4 py-2 rounded-full bg-blue-600 text-white disabled:opacity-50 hover:bg-blue-700 transition-all duration-200">
         {isPending ? "..." : "Search"}
       </button>
     </form>
