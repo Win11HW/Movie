@@ -1,11 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getTrendingMovies, getTopRatedMovies, getTrendingTV, getTopRatedTV, searchMovies } from "@/lib/tmdb";
+import Link from "next/link";
+import {
+  getTrendingMovies,
+  getTopRatedMovies,
+  getTrendingTV,
+  getTopRatedTV,
+  searchMovies,
+} from "@/lib/tmdb";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
@@ -54,10 +68,26 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          <CarouselSection title="🎬 Trending Movies" items={trendingMovies} />
-          <CarouselSection title="⭐ Top Rated Movies" items={topRatedMovies} />
-          <CarouselSection title="📺 Trending TV" items={trendingTV} />
-          <CarouselSection title="🏆 Top Rated TV" items={topRatedTV} />
+          <CarouselSection
+            title="🎬 Trending Movies"
+            items={trendingMovies}
+            link="/movies/trending"
+          />
+          <CarouselSection
+            title="⭐ Top Rated Movies"
+            items={topRatedMovies}
+            link="/movies/top-rated"
+          />
+          <CarouselSection
+            title="📺 Trending TV"
+            items={trendingTV}
+            link="/tv/trending"
+          />
+          <CarouselSection
+            title="🏆 Top Rated TV"
+            items={topRatedTV}
+            link="/tv/top-rated"
+          />
         </>
       )}
 
@@ -66,18 +96,30 @@ export default function HomePage() {
   );
 }
 
-// ✅ Section Component using Carousel
-function CarouselSection({ title, items }: { title: string; items: any[] }) {
+// ✅ Carousel section with “View More” button
+function CarouselSection({
+  title,
+  items,
+  link,
+}: {
+  title: string;
+  items: any[];
+  link: string;
+}) {
   return (
     <section className="space-y-4">
-      <h2 className="text-2xl font-bold">{title}</h2>
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
+      {/* Header row: title + button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <Link href={link}>
+          <Button variant="outline" size="sm" className="text-white border border-white bg-transparent hover:bg-white/10 hover:text-white rounded-full">
+            View More →
+          </Button>
+        </Link>
+      </div>
+
+      {/* Carousel content */}
+      <Carousel opts={{ align: "start", loop: true }} className="w-full">
         <CarouselContent>
           {items.map((item) => (
             <CarouselItem
