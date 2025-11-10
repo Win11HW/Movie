@@ -105,7 +105,7 @@ export default function HomePage() {
 /* ✅ Hero Carousel Component (top of page) */
 function HeroCarousel({ items }: { items: any[] }) {
   return (
-    <div className="relative w-full h-[60vh]">
+    <div className="relative w-full h-[60vh] ms:h-screen">
       <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
         <CarouselContent>
           {items.map((movie) => (
