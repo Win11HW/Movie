@@ -120,12 +120,6 @@ export default function HomePage() {
                 isExpanded={expandedSections["top-rated-movies"]}
                 onToggle={() => toggleSection("top-rated-movies")}
               />
-            </div>
-          )}
-
-          {/* Trend Section */}
-          {showTrend && (
-            <div ref={trendRef}>
               <ExpandableSection
                 title="🔥 Trending Now"
                 items={trendingMovies}
@@ -133,12 +127,6 @@ export default function HomePage() {
                 isExpanded={expandedSections["trending-now"]}
                 onToggle={() => toggleSection("trending-now")}
               />
-            </div>
-          )}
-
-          {/* TV Section */}
-          {showTV && (
-            <div ref={tvRef} className="flex flex-col gap-14"> {/* Added gap-16 between TV sections */}
               <ExpandableSection
                 title="📺 Trending TV Shows"
                 items={trendingTV}
