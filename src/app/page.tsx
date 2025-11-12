@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import {
   getTrendingMovies,
   getTopRatedMovies,
@@ -25,7 +25,13 @@ export default function HomePage() {
   const [trendingTV, setTrendingTV] = useState<any[]>([]);
   const [topRatedTV, setTopRatedTV] = useState<any[]>([]);
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
+  const [activeSection, setActiveSection] = useState<string>("home");
   const { results } = useContext(SearchContext);
+
+  // Refs for scrolling to sections
+  const moviesRef = useRef<HTMLDivElement>(null);
+  const trendRef = useRef<HTMLDivElement>(null);
+  const tvRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,8 +56,36 @@ export default function HomePage() {
     }));
   };
 
+  const handleNavigateToSection = (section: string) => {
+    setActiveSection(section);
+    
+    // Scroll to the appropriate section
+    setTimeout(() => {
+      switch (section) {
+        case "movies":
+          moviesRef.current?.scrollIntoView({ behavior: "smooth" });
+          break;
+        case "trend":
+          trendRef.current?.scrollIntoView({ behavior: "smooth" });
+          break;
+        case "tv":
+          tvRef.current?.scrollIntoView({ behavior: "smooth" });
+          break;
+        case "home":
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          break;
+      }
+    }, 100);
+  };
+
+  // Filter sections based on active navigation
+  const showAllSections = activeSection === "home";
+  const showMovies = showAllSections || activeSection === "movies";
+  const showTrend = showAllSections || activeSection === "trend";
+  const showTV = showAllSections || activeSection === "tv";
+
   return (
-    <div className="p-6 flex flex-col gap-8">
+    <div className="p-6 flex flex-col gap-12"> {/* Increased gap from gap-8 to gap-12 */}
       {results ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">Search Results</h2>
@@ -64,36 +98,75 @@ export default function HomePage() {
       ) : (
         // 🔹 Display regular sections if no search
         <>
-          <HeroCarousel items={trendingMovies.slice(0, 8)} />
+          <HeroCarousel 
+            items={trendingMovies.slice(0, 8)} 
+            onNavigateToSection={handleNavigateToSection}
+          />
 
-          <ExpandableSection
-            title="🎬 Trending Movies"
-            items={trendingMovies}
-            sectionId="trending-movies"
-            isExpanded={expandedSections["trending-movies"]}
-            onToggle={() => toggleSection("trending-movies")}
-          />
-          <ExpandableSection
-            title="⭐ Top Rated Movies"
-            items={topRatedMovies}
-            sectionId="top-rated-movies"
-            isExpanded={expandedSections["top-rated-movies"]}
-            onToggle={() => toggleSection("top-rated-movies")}
-          />
-          <ExpandableSection
-            title="📺 Trending TV"
-            items={trendingTV}
-            sectionId="trending-tv"
-            isExpanded={expandedSections["trending-tv"]}
-            onToggle={() => toggleSection("trending-tv")}
-          />
-          <ExpandableSection
-            title="🏆 Top Rated TV"
-            items={topRatedTV}
-            sectionId="top-rated-tv"
-            isExpanded={expandedSections["top-rated-tv"]}
-            onToggle={() => toggleSection("top-rated-tv")}
-          />
+          {/* Movies Section */}
+          {showMovies && (
+            <div ref={moviesRef} className="flex flex-col gap-14"> {/* Added gap-16 between movie sections */}
+              <ExpandableSection
+                title="🎬 Trending Movies"
+                items={trendingMovies}
+                sectionId="trending-movies"
+                isExpanded={expandedSections["trending-movies"]}
+                onToggle={() => toggleSection("trending-movies")}
+              />
+              <ExpandableSection
+                title="⭐ Top Rated Movies"
+                items={topRatedMovies}
+                sectionId="top-rated-movies"
+                isExpanded={expandedSections["top-rated-movies"]}
+                onToggle={() => toggleSection("top-rated-movies")}
+              />
+            </div>
+          )}
+
+          {/* Trend Section */}
+          {showTrend && (
+            <div ref={trendRef}>
+              <ExpandableSection
+                title="🔥 Trending Now"
+                items={trendingMovies}
+                sectionId="trending-now"
+                isExpanded={expandedSections["trending-now"]}
+                onToggle={() => toggleSection("trending-now")}
+              />
+            </div>
+          )}
+
+          {/* TV Section */}
+          {showTV && (
+            <div ref={tvRef} className="flex flex-col gap-14"> {/* Added gap-16 between TV sections */}
+              <ExpandableSection
+                title="📺 Trending TV Shows"
+                items={trendingTV}
+                sectionId="trending-tv"
+                isExpanded={expandedSections["trending-tv"]}
+                onToggle={() => toggleSection("trending-tv")}
+              />
+              <ExpandableSection
+                title="🏆 Top Rated TV Shows"
+                items={topRatedTV}
+                sectionId="top-rated-tv"
+                isExpanded={expandedSections["top-rated-tv"]}
+                onToggle={() => toggleSection("top-rated-tv")}
+              />
+            </div>
+          )}
+
+          {/* Show message when a specific section is active */}
+          {!showAllSections && (
+            <div className="text-center py-8">
+              <Button
+                onClick={() => handleNavigateToSection("home")}
+                className="bg-blue-600 text-white rounded-full px-6 py-3 hover:bg-blue-700"
+              >
+                ← Back to All Sections
+              </Button>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -101,7 +174,7 @@ export default function HomePage() {
 }
 
 /* ✅ Hero Carousel Component */
-function HeroCarousel({ items }: { items: any[] }) {
+function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
   return (
     <div className="relative w-full h-[60vh] md:h-screen">
       <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
@@ -121,18 +194,20 @@ function HeroCarousel({ items }: { items: any[] }) {
                 <p className="max-w-2xl text-sm md:text-base text-gray-200 mb-4 line-clamp-3">
                   {movie.overview}
                 </p>
-                <Link href={`/movie/${movie.id}`}>
-                  <Button className="bg-blue-600 text-white rounded-full px-5 py-2 hover:bg-blue-700">
-                    Watch Now →
-                  </Button>
-                </Link>
+                <div className="flex gap-4">
+                  <Link href={`/movie/${movie.id}`}>
+                    <Button className="bg-blue-600 text-white rounded-full px-5 py-2 hover:bg-blue-700">
+                      Watch Now →
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white" />
-        <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white" />
+        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-12 w-12 border-none z-10" />
+        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-12 w-12 border-none z-10" />
       </Carousel>
     </div>
   );
@@ -156,7 +231,7 @@ function ExpandableSection({
   const displayedItems = isExpanded ? items : items.slice(0, 10);
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-6"> {/* Increased from space-y-4 to space-y-6 for more internal spacing */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">{title}</h2>
         <Button
@@ -171,20 +246,22 @@ function ExpandableSection({
 
       {!isExpanded ? (
         // Carousel view for collapsed state
-        <Carousel opts={{ align: "start", loop: true }} className="w-full">
-          <CarouselContent>
-            {displayedItems.map((item) => (
-              <CarouselItem
-                key={item.id}
-                className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
-              >
-                <MovieCard {...item} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <div className="relative">
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <CarouselContent>
+              {displayedItems.map((item) => (
+                <CarouselItem
+                  key={item.id}
+                  className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+                >
+                  <MovieCard {...item} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 border-none z-10" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 border-none z-10" />
+          </Carousel>
+        </div>
       ) : (
         // Grid view for expanded state
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">

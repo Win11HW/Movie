@@ -28,8 +28,8 @@ export default function Navbar({ onSearch }: NavbarProps) {
           <Link href="/Movies" className="hover:text-blue-400 text-white">
             Movies
           </Link>
-          <Link href="/Trend" className="hover:text-blue-400 text-white">
-            Trend
+          <Link href="/Trending" className="hover:text-blue-400 text-white">
+            Trending
           </Link>
           <Link href="/TV" className="hover:text-blue-400 text-white">
             TV
@@ -72,11 +72,11 @@ export default function Navbar({ onSearch }: NavbarProps) {
               Movies
             </Link>
             <Link
-              href="/Trend"
+              href="/Trending"
               className="hover:text-blue-400 text-white"
               onClick={() => setMenuOpen(false)}
             >
-              Trend
+              Trending
             </Link>
             <Link
               href="/TV"
