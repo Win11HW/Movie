@@ -103,16 +103,17 @@ export default function HomePage() {
 /* ✅ Hero Carousel Component */
 function HeroCarousel({ items }: { items: any[] }) {
   return (
-    <div className="relative w-full h-[60vh]">
+    <div className="relative w-full h-[60vh] md:h-screen">
       <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
         <CarouselContent>
           {items.map((movie) => (
-            <CarouselItem key={movie.id} className="relative h-[60vh]">
+            <CarouselItem key={movie.id} className="relative h-[99vh]">
               <img
                 src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                alt={movie.title}
+                alt={movie.title || "Movie"}
                 className="w-full h-full object-cover brightness-75"
               />
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-10">
                 <h2 className="text-3xl md:text-5xl font-bold mb-3">
                   {movie.title}
@@ -129,8 +130,9 @@ function HeroCarousel({ items }: { items: any[] }) {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+
+        <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white" />
+        <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white" />
       </Carousel>
     </div>
   );
