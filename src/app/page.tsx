@@ -17,14 +17,15 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SearchContext } from "./layout"; 
+import { SearchContext } from "./layout";
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
   const [trendingTV, setTrendingTV] = useState<any[]>([]);
   const [topRatedTV, setTopRatedTV] = useState<any[]>([]);
-  const { results } = useContext(SearchContext); 
+  const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
+  const { results } = useContext(SearchContext);
 
   useEffect(() => {
     async function fetchData() {
@@ -42,42 +43,56 @@ export default function HomePage() {
     fetchData();
   }, []);
 
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  };
+
   return (
     <div className="p-6 flex flex-col gap-8">
       {results ? (
-        
         <div>
           <h2 className="text-2xl font-bold mb-4">Search Results</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {results.map((movie) => (
               <MovieCard key={movie.id} {...movie} />
             ))}
           </div>
         </div>
       ) : (
-        // 🔹 عرض الأقسام العادية إذا لا يوجد بحث
+        // 🔹 Display regular sections if no search
         <>
           <HeroCarousel items={trendingMovies.slice(0, 8)} />
 
-          <CarouselSection
+          <ExpandableSection
             title="🎬 Trending Movies"
             items={trendingMovies}
-            link="/movies/trending"
+            sectionId="trending-movies"
+            isExpanded={expandedSections["trending-movies"]}
+            onToggle={() => toggleSection("trending-movies")}
           />
-          <CarouselSection
+          <ExpandableSection
             title="⭐ Top Rated Movies"
             items={topRatedMovies}
-            link="/movies/top-rated"
+            sectionId="top-rated-movies"
+            isExpanded={expandedSections["top-rated-movies"]}
+            onToggle={() => toggleSection("top-rated-movies")}
           />
-          <CarouselSection
+          <ExpandableSection
             title="📺 Trending TV"
             items={trendingTV}
-            link="/tv/trending"
+            sectionId="trending-tv"
+            isExpanded={expandedSections["trending-tv"]}
+            onToggle={() => toggleSection("trending-tv")}
           />
-          <CarouselSection
+          <ExpandableSection
             title="🏆 Top Rated TV"
             items={topRatedTV}
-            link="/tv/top-rated"
+            sectionId="top-rated-tv"
+            isExpanded={expandedSections["top-rated-tv"]}
+            onToggle={() => toggleSection("top-rated-tv")}
           />
         </>
       )}
@@ -121,45 +136,61 @@ function HeroCarousel({ items }: { items: any[] }) {
   );
 }
 
-/* ✅ Carousel Section */
-function CarouselSection({
+/* ✅ Expandable Section Component */
+function ExpandableSection({
   title,
   items,
-  link,
+  sectionId,
+  isExpanded,
+  onToggle,
 }: {
   title: string;
   items: any[];
-  link: string;
+  sectionId: string;
+  isExpanded: boolean;
+  onToggle: () => void;
 }) {
+  // Show only 10 items in carousel view, all items in expanded view
+  const displayedItems = isExpanded ? items : items.slice(0, 10);
+
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">{title}</h2>
-        <Link href={link}>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-white border border-white bg-transparent hover:bg-white/10 hover:text-white rounded-full"
-          >
-            View More →
-          </Button>
-        </Link>
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-white border border-white bg-transparent hover:bg-white/10 hover:text-white rounded-full"
+          onClick={onToggle}
+        >
+          {isExpanded ? "Show Less ↑" : "View More →"}
+        </Button>
       </div>
 
-      <Carousel opts={{ align: "start", loop: true }} className="w-full">
-        <CarouselContent>
-          {items.map((item) => (
-            <CarouselItem
-              key={item.id}
-              className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
-            >
-              <MovieCard {...item} />
-            </CarouselItem>
+      {!isExpanded ? (
+        // Carousel view for collapsed state
+        <Carousel opts={{ align: "start", loop: true }} className="w-full">
+          <CarouselContent>
+            {displayedItems.map((item) => (
+              <CarouselItem
+                key={item.id}
+                className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+              >
+                <MovieCard {...item} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      ) : (
+        // Grid view for expanded state
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          {displayedItems.map((item) => (
+            <MovieCard key={item.id} {...item} />
           ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+        </div>
+      )}
     </section>
   );
 }
