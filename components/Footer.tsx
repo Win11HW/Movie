@@ -103,7 +103,7 @@ export default function Footer() {
         {/* Copyright Section */}
         <div className="border-t border-gray-700 pt-6 text-center">
           <p className="text-gray-400 text-sm">
-            © 2025 MovieHub. All rights reserved. Powered by TMDB.
+            © 2025 All rights reserved by Ayoub Alayoubi 
           </p>
         </div>
       </div>
