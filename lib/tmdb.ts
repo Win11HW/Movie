@@ -49,3 +49,29 @@ export const getMovieDetails = async (id: string) => {
     throw err;
   }
 };
+
+// ✅ Movie Credits (using axios)
+export const getMovieCredits = async (movieId: string) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${movieId}/credits`, {
+      params: { api_key: API_KEY },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching movie credits:", error);
+    return null;
+  }
+};
+
+// ✅ Similar Movies (using axios)
+export const getSimilarMovies = async (movieId: string) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${movieId}/similar`, {
+      params: { api_key: API_KEY },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching similar movies:", error);
+    return null;
+  }
+};

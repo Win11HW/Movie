@@ -1,30 +1,224 @@
-import { getMovieDetails } from "@/lib/tmdb";
+import { getMovieDetails, getMovieCredits, getSimilarMovies } from "@/lib/tmdb";
+import Image from "next/image";
+import Link from "next/link";
 
-export default async function MovieDetailPage({ params }: { params: { id: string } }) {
+interface MoviePageProps {
+  params: Promise<{ id: string }>;
+}
+
+// Define TypeScript interfaces
+interface Genre {
+  id: number;
+  name: string;
+}
+
+interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+}
+
+interface SimilarMovie {
+  id: number;
+  title?: string;
+  name?: string;
+  poster_path: string | null;
+  vote_average: number;
+  release_date?: string;
+}
+
+interface MovieDetails {
+  id: number;
+  title?: string;
+  name?: string;
+  poster_path: string | null;
+  overview: string | null;
+  vote_average: number;
+  release_date?: string;
+  first_air_date?: string;
+  runtime?: number;
+  genres?: Genre[];
+}
+
+export default async function MovieDetailPage({ params }: MoviePageProps) {
   try {
-    const movie = await getMovieDetails(params.id);
+    // Await the params object first
+    const { id } = await params;
+    
+    // Fetch all data in parallel
+    const [movie, credits, similarMovies] = await Promise.all([
+      getMovieDetails(id),
+      getMovieCredits(id),
+      getSimilarMovies(id)
+    ]);
 
-    const img = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    if (!movie || !(movie as MovieDetails).id) {
+      throw new Error("Movie not found");
+    }
+
+    const movieDetails = movie as MovieDetails;
+    const imageUrl = movieDetails.poster_path
+      ? `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`
       : "/no-image.jpg";
 
+    // Get top 10 cast members
+    const topCast = (credits?.cast?.slice(0, 10) || []) as CastMember[];
+    
+    // Get similar movies (up to 6)
+    const similar = (similarMovies?.results?.slice(0, 6) || []) as SimilarMovie[];
+
     return (
-      <main className="min-h-screen bg-gray-900 text-white p-6 flex flex-col items-center">
-        <img src={img} alt={movie.title || movie.name} className="w-72 rounded-lg mb-6" />
-        <h1 className="text-3xl font-bold mb-4">{movie.title || movie.name}</h1>
-        <p className="max-w-2xl text-center text-gray-300">{movie.overview}</p>
-        <p className="mt-4 text-gray-400">
-          ⭐ {movie.vote_average} | 📅 {movie.release_date || movie.first_air_date}
-        </p>
+      <main className="min-h-screen bg-gray-900 text-white p-6">
+        {/* Movie Header */}
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-12">
+          {/* Poster */}
+          <div className="w-full lg:w-1/3 flex justify-center">
+            <div className="w-72 h-auto relative">
+              <Image
+                src={imageUrl}
+                alt={movieDetails.title || movieDetails.name || "No title"}
+                width={500}
+                height={750}
+                className="rounded-lg object-cover"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Movie Info */}
+          <div className="w-full lg:w-2/3">
+            <h1 className="text-4xl font-bold mb-4">
+              {movieDetails.title || movieDetails.name || "Untitled"}
+            </h1>
+
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-gray-300 px-3 py-1 rounded-full font-semibold">
+                ⭐ {movieDetails.vote_average?.toFixed(1) ?? "N/A"}
+              </span>
+              <span className="text-gray-300">
+                📅 {movieDetails.release_date || movieDetails.first_air_date || "Unknown"}
+              </span>
+              {movieDetails.runtime && (
+                <span className="text-gray-300">
+                  ⏱️ {movieDetails.runtime} min
+                </span>
+              )}
+            </div>
+
+            {movieDetails.genres && movieDetails.genres.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {movieDetails.genres.map((genre: Genre) => (
+                  <span
+                    key={genre.id}
+                    className="bg-gray-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {genre.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {movieDetails.overview ? (
+              <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                {movieDetails.overview}
+              </p>
+            ) : (
+              <p className="text-lg text-gray-500 italic mb-6">
+                No overview available.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Cast Section */}
+        <section className="max-w-6xl mx-auto mb-12">
+          <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
+            Top Cast
+          </h2>
+          {topCast.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {topCast.map((person: CastMember) => (
+                <div
+                  key={person.id}
+                  className="bg-gray-800 rounded-lg p-4 text-center"
+                >
+                  <div className="w-20 h-20 mx-auto mb-3 relative rounded-full overflow-hidden">
+                    <Image
+                      src={
+                        person.profile_path
+                          ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
+                          : "/no-avatar.jpg"
+                      }
+                      alt={person.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-sm mb-1">{person.name}</h3>
+                  <p className="text-gray-400 text-xs">{person.character}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center">No cast information available.</p>
+          )}
+        </section>
+
+        {/* Similar Movies Section */}
+        <section className="max-w-6xl mx-auto">
+          <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
+            Similar Movies
+          </h2>
+          {similar.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {similar.map((similarMovie: SimilarMovie) => (
+                <Link
+                  key={similarMovie.id}
+                  href={`/movie/${similarMovie.id}`}
+                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
+                >
+                  <div className="aspect-[2/3] relative">
+                    <Image
+                      src={
+                        similarMovie.poster_path
+                          ? `https://image.tmdb.org/t/p/w300${similarMovie.poster_path}`
+                          : "/no-image.jpg"
+                      }
+                      alt={similarMovie.title || similarMovie.name || "No title"}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-sm line-clamp-2">
+                      {similarMovie.title || similarMovie.name}
+                    </h3>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-gray-400 text-xs">
+                        ⭐ {similarMovie.vote_average?.toFixed(1) || "N/A"}
+                      </span>
+                      <span className="text-gray-400 text-xs">
+                        {similarMovie.release_date?.substring(0, 4) || "TBA"}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center">No similar movies found.</p>
+          )}
+        </section>
       </main>
     );
-  } catch {
+  } catch (error) {
     return (
       <main className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">❌ Movie Not Found</h1>
           <p className="text-gray-400">
-            We couldn’t find details for this title. Try another one.
+            We couldn't find details for this title. Please try another one.
           </p>
         </div>
       </main>
