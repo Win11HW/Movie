@@ -7,7 +7,7 @@ interface MovieCardProps {
   title?: string;
   name?: string;
   poster_path: string;
-  type?: "movie" | "tv"; // لتحديد الرابط الصحيح
+  type?: "movie" | "tv"; 
 }
 
 export default function MovieCard({ id, title, name, poster_path, type = "movie" }: MovieCardProps) {
