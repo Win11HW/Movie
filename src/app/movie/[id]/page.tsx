@@ -1,4 +1,4 @@
-import { getMovieDetails, getMovieCredits, getSimilarMovies } from "@/lib/tmdb";
+import { getMovieDetails, getMovieCredits, getSimilarMovies, getMovieVideos } from "@/lib/tmdb";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -33,6 +33,7 @@ interface MovieDetails {
   title?: string;
   name?: string;
   poster_path: string | null;
+  backdrop_path: string | null;
   overview: string | null;
   vote_average: number;
   release_date?: string;
@@ -41,16 +42,26 @@ interface MovieDetails {
   genres?: Genre[];
 }
 
+interface Video {
+  id: string;
+  key: string;
+  name: string;
+  type: string;
+  site: string;
+  size: number;
+}
+
 export default async function MovieDetailPage({ params }: MoviePageProps) {
   try {
     // Await the params object first
     const { id } = await params;
     
     // Fetch all data in parallel
-    const [movie, credits, similarMovies] = await Promise.all([
+    const [movie, credits, similarMovies, videos] = await Promise.all([
       getMovieDetails(id),
       getMovieCredits(id),
-      getSimilarMovies(id)
+      getSimilarMovies(id),
+      getMovieVideos(id)
     ]);
 
     if (!movie || !(movie as MovieDetails).id) {
@@ -67,6 +78,11 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
     
     // Get similar movies (up to 6)
     const similar = (similarMovies?.results?.slice(0, 6) || []) as SimilarMovie[];
+
+    // Get trailer video (first YouTube trailer found)
+    const trailer = (videos?.results || []).find(
+      (video: Video) => video.site === "YouTube" && video.type === "Trailer"
+    );
 
     return (
       <main className="min-h-screen bg-gray-900 text-white p-6">
@@ -130,6 +146,57 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
             )}
           </div>
         </div>
+
+        {/* Video Trailer Section */}
+        {trailer && (
+          <section className="max-w-6xl mx-auto mb-12">
+            <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
+              🎬 Official Trailer
+            </h2>
+            <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+              <iframe
+                src={`https://www.youtube.com/embed/${trailer.key}`}
+                title={trailer.name || "Movie Trailer"}
+                className="w-full h-full"
+                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            </div>
+          </section>
+        )}
+
+        {/* All Videos Section (if multiple videos available) */}
+        {videos?.results && videos.results.length > 0 && (
+          <section className="max-w-6xl mx-auto mb-12">
+            <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
+              🎥 Videos & Clips
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {videos.results.slice(0, 6).map((video: Video) => (
+                <div key={video.id} className="bg-gray-800 rounded-lg overflow-hidden">
+                  <div className="relative aspect-video bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.key}`}
+                      title={video.name}
+                      className="w-full h-full"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-sm mb-2 line-clamp-2">
+                      {video.name}
+                    </h3>
+                    <div className="flex justify-between items-center text-xs text-gray-400">
+                      <span className="capitalize">{video.type}</span>
+                      <span>{video.site}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Cast Section */}
         <section className="max-w-6xl mx-auto mb-12">

@@ -28,6 +28,19 @@ export const searchMovies = async (query: string) => {
   return res.data.results;
 };
 
+// ✅ Movie Videos/Trailers
+export const getMovieVideos = async (movieId: string) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
+      params: { api_key: API_KEY },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching movie videos:", error);
+    return null;
+  }
+};
+
 // ✅ Details (Movie or TV)
 export const getMovieDetails = async (id: string) => {
   try {
