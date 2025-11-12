@@ -17,14 +17,14 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SearchContext } from "./layout"; // 👈 استيراد الكونتكست
+import { SearchContext } from "./layout"; 
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
   const [trendingTV, setTrendingTV] = useState<any[]>([]);
   const [topRatedTV, setTopRatedTV] = useState<any[]>([]);
-  const { results } = useContext(SearchContext); // ✅ جلب نتائج البحث
+  const { results } = useContext(SearchContext); 
 
   useEffect(() => {
     async function fetchData() {
@@ -45,7 +45,7 @@ export default function HomePage() {
   return (
     <div className="p-6 flex flex-col gap-8">
       {results ? (
-        // ✅ عرض نتائج البحث
+        
         <div>
           <h2 className="text-2xl font-bold mb-4">Search Results</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
