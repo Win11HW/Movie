@@ -85,11 +85,11 @@ export default function HomePage() {
   const showTV = showAllSections || activeSection === "tv";
 
   return (
-    <div className="p-6 flex flex-col gap-12"> {/* Increased gap from gap-8 to gap-12 */}
+    <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12"> {/* Reduced mobile padding and gap */}
       {results ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">Search Results</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
             {results.map((movie) => (
               <MovieCard key={movie.id} {...movie} />
             ))}
@@ -105,7 +105,7 @@ export default function HomePage() {
 
           {/* Movies Section */}
           {showMovies && (
-            <div ref={moviesRef} className="flex flex-col gap-14"> {/* Added gap-16 between movie sections */}
+            <div ref={moviesRef} className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0"> {/* Added mobile gap and top margin */}
               <ExpandableSection
                 title="🎬 Trending Movies"
                 items={trendingMovies}
@@ -146,7 +146,7 @@ export default function HomePage() {
 
           {/* Show message when a specific section is active */}
           {!showAllSections && (
-            <div className="text-center py-8">
+            <div className="text-center py-6 md:py-8">
               <Button
                 onClick={() => handleNavigateToSection("home")}
                 className="bg-blue-600 text-white rounded-full px-6 py-3 hover:bg-blue-700"
@@ -164,27 +164,27 @@ export default function HomePage() {
 /* ✅ Hero Carousel Component */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
   return (
-    <div className="relative w-full h-[60vh] md:h-screen">
+    <div className="relative w-full h-[50vh] md:h-screen"> {/* Reduced mobile height */}
       <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
         <CarouselContent>
           {items.map((movie) => (
-            <CarouselItem key={movie.id} className="relative h-[99vh]">
+            <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]"> {/* Reduced mobile height */}
               <img
                 src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
                 alt={movie.title || "Movie"}
                 className="w-full h-full object-cover brightness-75"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-10">
-                <h2 className="text-3xl md:text-5xl font-bold mb-3">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 md:p-10"> {/* Reduced mobile padding */}
+                <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3"> {/* Responsive text size */}
                   {movie.title}
                 </h2>
-                <p className="max-w-2xl text-sm md:text-base text-gray-200 mb-4 line-clamp-3">
+                <p className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3"> {/* Responsive text and line clamp */}
                   {movie.overview}
                 </p>
-                <div className="flex gap-4">
+                <div className="flex gap-3 md:gap-4"> {/* Responsive gap */}
                   <Link href={`/movie/${movie.id}`}>
-                    <Button className="bg-blue-600 text-white rounded-full px-5 py-2 hover:bg-blue-700">
+                    <Button className="bg-blue-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:bg-blue-700"> {/* Responsive button */}
                       Watch Now →
                     </Button>
                   </Link>
@@ -194,8 +194,8 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-12 w-12 border-none z-10" />
-        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-12 w-12 border-none z-10" />
+        <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10" /> {/* Smaller on mobile */}
+        <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10" /> {/* Smaller on mobile */}
       </Carousel>
     </div>
   );
@@ -219,13 +219,13 @@ function ExpandableSection({
   const displayedItems = isExpanded ? items : items.slice(0, 10);
 
   return (
-    <section className="space-y-6"> {/* Increased from space-y-4 to space-y-6 for more internal spacing */}
+    <section className="space-y-4 md:space-y-6"> {/* Reduced space on mobile */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-bold">{title}</h2> {/* Smaller title on mobile */}
         <Button
           variant="outline"
           size="sm"
-          className="text-white border border-white bg-transparent hover:bg-white/10 hover:text-white rounded-full"
+          className="text-white border border-white bg-transparent hover:bg-white/10 hover:text-white rounded-full text-xs md:text-sm"
           onClick={onToggle}
         >
           {isExpanded ? "Show Less ↑" : "View More →"}
@@ -246,13 +246,13 @@ function ExpandableSection({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 border-none z-10" />
-            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-8 w-8 border-none z-10" />
+            <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10" /> {/* Smaller on mobile */}
+            <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10" /> {/* Smaller on mobile */}
           </Carousel>
         </div>
       ) : (
         // Grid view for expanded state
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"> {/* Smaller gap on mobile */}
           {displayedItems.map((item) => (
             <MovieCard key={item.id} {...item} />
           ))}
