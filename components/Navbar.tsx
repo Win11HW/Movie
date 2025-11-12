@@ -17,7 +17,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="text-2xl font-bold text-white">
-          <Link href="/">🎬 Movie DB</Link>
+          <Link href="/">🎬 Movielify</Link>
         </div>
 
         {/* Desktop Links */}

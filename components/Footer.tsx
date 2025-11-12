@@ -7,7 +7,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="text-2xl font-bold text-white mb-4">
-              🎬 Movie DB
+              🎬 Movielify
             </div>
             <p className="text-gray-400 leading-relaxed">
               Your ultimate destination for discovering amazing movies, trailers, and detailed information.
