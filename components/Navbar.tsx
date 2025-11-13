@@ -13,38 +13,40 @@ export default function Navbar({ onSearch }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 px-6 py-4 w-full">
-      <div className="flex items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 bg-gray-900/80 border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
-        <div className="text-2xl font-bold text-white">
-          <Link href="/">🎬 Movielify</Link>
+        <div className="text-2xl font-bold">
+          <Link href="/" className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            🎬 Movielify
+          </Link>
         </div>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex gap-8">
-          <Link href="/" className="hover:text-blue-400 text-white">
+        <div className="hidden md:flex items-center space-x-6">
+          <Link href="/" className="text-white/80 hover:text-white transition-colors duration-200">
             Home
           </Link>
-          <Link href="/Movies" className="hover:text-blue-400 text-white">
+          <Link href="/Movies" className="text-white/80 hover:text-white transition-colors duration-200">
             Movies
           </Link>
-          <Link href="/Trending" className="hover:text-blue-400 text-white">
+          <Link href="/Trending" className="text-white/80 hover:text-white transition-colors duration-200">
             Trending
           </Link>
-          <Link href="/TV" className="hover:text-blue-400 text-white">
+          <Link href="/TV" className="text-white/80 hover:text-white transition-colors duration-200">
             TV
           </Link>
         </div>
 
         {/* Search + Hamburger */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center space-x-3">
           <div className="hidden md:block">
             <SearchBar onSearch={onSearch} />
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="text-white md:hidden"
+            className="text-white/80 hover:text-white md:hidden transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -54,33 +56,33 @@ export default function Navbar({ onSearch }: NavbarProps) {
 
       {/* Mobile Dropdown */}
       {menuOpen && (
-        <div className="flex flex-col items-center mt-4 md:hidden animate-fadeIn">
+        <div className="md:hidden animate-fadeIn border-t border-white/10">
           {/* Links in one row */}
-          <div className="flex flex-row justify-center gap-6 mb-4">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex flex-row justify-center space-x-6">
             <Link
               href="/"
-              className="hover:text-blue-400 text-white"
+              className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/Movies"
-              className="hover:text-blue-400 text-white"
+              className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Movies
             </Link>
             <Link
               href="/Trending"
-              className="hover:text-blue-400 text-white"
+              className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Trending
             </Link>
             <Link
               href="/TV"
-              className="hover:text-blue-400 text-white"
+              className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               TV
@@ -88,7 +90,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
           </div>
 
           {/* Search visible in mobile dropdown */}
-          <div className="w-full px-4">
+          <div className="max-w-7xl mx-auto w-full px-6 pb-4">
             <SearchBar onSearch={onSearch} />
           </div>
         </div>

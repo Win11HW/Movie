@@ -33,7 +33,9 @@ export default function RootLayout({
       <body className="bg-gray-900 text-white min-h-screen flex flex-col">
         <SearchContext.Provider value={{ results, setResults, handleSearch }}>
           <Navbar onSearch={handleSearch} />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+              {children}
+          </main>
           <Footer />
         </SearchContext.Provider>
       </body>

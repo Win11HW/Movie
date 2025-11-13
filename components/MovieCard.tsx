@@ -18,10 +18,21 @@ export default function MovieCard({ id, title, name, poster_path, type = "movie"
   return (
     <Link
       href={`/${type}/${id}`}
-      className="block rounded-lg overflow-hidden hover:scale-105 transition"
+      className="group block rounded-xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 transition-all duration-300"
     >
-      <img src={img} alt={title || name} className="w-full h-96 object-cover" />
-      <h3 className="p-2 text-center text-white font-semibold">{title || name}</h3>
+      <div className="relative aspect-[2/3] w-full">
+        <img
+          src={img}
+          alt={title || name}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90" />
+        <div className="absolute inset-x-0 bottom-0 p-3">
+          <h3 className="text-white/95 text-sm md:text-base font-semibold line-clamp-2">
+            {title || name}
+          </h3>
+        </div>
+      </div>
     </Link>
   );
 }
