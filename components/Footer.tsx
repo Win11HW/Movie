@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-gray-800 w-full mt-12 border-t border-white/10">
@@ -19,24 +21,24 @@ export default function Footer() {
             <h3 className="text-white/90 font-semibold mb-4 text-lg">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#home" className="text-white/60 hover:text-white transition-colors">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/Movies" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#movies" className="text-white/60 hover:text-white transition-colors">
                   Movies
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#about" className="text-white/60 hover:text-white transition-colors">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#contact" className="text-white/60 hover:text-white transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -46,24 +48,24 @@ export default function Footer() {
             <h3 className="text-white/90 font-semibold mb-4 text-lg">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/movies/action" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#category-action" className="text-white/60 hover:text-white transition-colors">
                   Action
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/movies/comedy" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#category-comedy" className="text-white/60 hover:text-white transition-colors">
                   Comedy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/movies/drama" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#category-drama" className="text-white/60 hover:text-white transition-colors">
                   Drama
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/movies/horror" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/#category-horror" className="text-white/60 hover:text-white transition-colors">
                   Horror
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

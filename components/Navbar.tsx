@@ -17,23 +17,23 @@ export default function Navbar({ onSearch }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="text-2xl font-bold">
-          <Link href="/" className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          <Link href="/#home" className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
             🎬 Movielify
           </Link>
         </div>
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link href="/#home" className="text-white/80 hover:text-white transition-colors duration-200">
             Home
           </Link>
-          <Link href="/Movies" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link href="/#movies" className="text-white/80 hover:text-white transition-colors duration-200">
             Movies
           </Link>
-          <Link href="/Trending" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link href="/#trending" className="text-white/80 hover:text-white transition-colors duration-200">
             Trending
           </Link>
-          <Link href="/TV" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link href="/#tv" className="text-white/80 hover:text-white transition-colors duration-200">
             TV
           </Link>
         </div>
@@ -60,28 +60,28 @@ export default function Navbar({ onSearch }: NavbarProps) {
           {/* Links in one row */}
           <div className="max-w-7xl mx-auto px-6 py-3 flex flex-row justify-center space-x-6">
             <Link
-              href="/"
+              href="/#home"
               className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Home
             </Link>
             <Link
-              href="/Movies"
+              href="/#movies"
               className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Movies
             </Link>
             <Link
-              href="/Trending"
+              href="/#trending"
               className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
               Trending
             </Link>
             <Link
-              href="/TV"
+              href="/#tv"
               className="text-white/90 hover:text-white transition-colors duration-200"
               onClick={() => setMenuOpen(false)}
             >
