@@ -18,7 +18,7 @@ export default function MovieCard({ id, title, name, poster_path, type = "movie"
   return (
     <Link
       href={`/${type}/${id}`}
-      className="block bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition"
+      className="block rounded-lg overflow-hidden hover:scale-105 transition"
     >
       <img src={img} alt={title || name} className="w-full h-96 object-cover" />
       <h3 className="p-2 text-center text-white font-semibold">{title || name}</h3>
