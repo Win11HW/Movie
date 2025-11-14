@@ -73,6 +73,10 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
       ? `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`
       : "/no-image.jpg";
 
+    const backdropUrl = movieDetails.backdrop_path
+      ? `https://image.tmdb.org/t/p/w1280${movieDetails.backdrop_path}`
+      : null;
+
     // Get top 10 cast members
     const topCast = (credits?.cast?.slice(0, 10) || []) as CastMember[];
     
@@ -85,206 +89,291 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
     );
 
     return (
-      <main className="min-h-screen bg-gray-900 text-white p-6">
-        {/* Movie Header */}
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 mb-12">
-          {/* Poster */}
-          <div className="w-full lg:w-1/3 flex justify-center">
-            <div className="w-72 h-auto relative">
-              <Image
-                src={imageUrl}
-                alt={movieDetails.title || movieDetails.name || "No title"}
-                width={500}
-                height={750}
-                className="rounded-lg object-cover"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Movie Info */}
-          <div className="w-full lg:w-2/3">
-            <h1 className="text-4xl font-bold mb-4">
-              {movieDetails.title || movieDetails.name || "Untitled"}
-            </h1>
-
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-gray-300 px-3 py-1 rounded-full font-semibold">
-                ⭐ {movieDetails.vote_average?.toFixed(1) ?? "N/A"}
-              </span>
-              <span className="text-gray-300">
-                📅 {movieDetails.release_date || movieDetails.first_air_date || "Unknown"}
-              </span>
-              {movieDetails.runtime && (
-                <span className="text-gray-300">
-                  ⏱️ {movieDetails.runtime} min
-                </span>
-              )}
-            </div>
-
-            {movieDetails.genres && movieDetails.genres.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {movieDetails.genres.map((genre: Genre) => (
-                  <span
-                    key={genre.id}
-                    className="bg-gray-700 px-3 py-1 rounded-full text-sm"
-                  >
-                    {genre.name}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {movieDetails.overview ? (
-              <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                {movieDetails.overview}
-              </p>
-            ) : (
-              <p className="text-lg text-gray-500 italic mb-6">
-                No overview available.
-              </p>
-            )}
-          </div>
+      <main className="min-h-screen bg-gray-900 text-white">
+        {/* Background Section with Backdrop */}
+        <div 
+          className="relative h-96 md:h-[500px] bg-cover bg-center bg-no-repeat"
+          style={backdropUrl ? { backgroundImage: `url(${backdropUrl})` } : {}}
+        >
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"></div>
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
+          
         </div>
 
-        {/* Video Trailer Section */}
-        {trailer && (
-          <section className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
-              🎬 Official Trailer
-            </h2>
-            <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-              <iframe
-                src={`https://www.youtube.com/embed/${trailer.key}`}
-                title={trailer.name || "Movie Trailer"}
-                className="w-full h-full"
-                allowFullScreen
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            </div>
-          </section>
-        )}
+        {/* Main Content */}
+        <div className="container mx-auto px-6 py-8 -mt-20 relative z-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8 mb-12">
+              {/* Poster Card */}
+              <div className="w-full lg:w-1/3 flex justify-center lg:justify-start">
+                <div className="w-72 h-auto relative group">
+                  <div className="absolute -inset-4 from-blue-500 to-cyan-500 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition duration-300"></div>
+                  <div className="relative bg-gray-800 rounded-xl overflow-hidden shadow-2xl">
+                    <Image
+                      src={imageUrl}
+                      alt={movieDetails.title || movieDetails.name || "No title"}
+                      width={500}
+                      height={750}
+                      className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
 
-        {/* All Videos Section (if multiple videos available) */}
-        {videos?.results && videos.results.length > 0 && (
-          <section className="max-w-6xl mx-auto mb-12">
-            <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
-              🎥 Videos & Clips
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.results.slice(0, 6).map((video: Video) => (
-                <div key={video.id} className="bg-gray-800 rounded-lg overflow-hidden">
-                  <div className="relative aspect-video bg-black">
+              {/* Movie Info Card */}
+              <div className="w-full lg:w-2/3">
+                <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-2xl border border-gray-700/50">
+                  {/* Title Section - Moved down here */}
+                  <div className="mb-6">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+                      {movieDetails.title || movieDetails.name || "Untitled"}
+                    </h1>
+                  </div>
+
+                  {/* Movie Details Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    {/* Rating */}
+                    <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
+                      <div className="text-2xl text-yellow-400">⭐</div>
+                      <div>
+                        <div className="text-sm text-gray-400">Rating</div>
+                        <div className="text-xl font-bold text-white">
+                          {movieDetails.vote_average?.toFixed(1) ?? "N/A"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Release Date */}
+                    <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
+                      <div className="text-2xl">📅</div>
+                      <div>
+                        <div className="text-sm text-gray-400">Release Date</div>
+                        <div className="text-xl font-bold text-white">
+                          {movieDetails.release_date || movieDetails.first_air_date || "Unknown"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Runtime */}
+                    {movieDetails.runtime && (
+                      <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
+                        <div className="text-2xl">⏱️</div>
+                        <div>
+                          <div className="text-sm text-gray-400">Runtime</div>
+                          <div className="text-xl font-bold text-white">
+                            {movieDetails.runtime} min
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Genres Section */}
+                  {movieDetails.genres && movieDetails.genres.length > 0 && (
+                    <div className="mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex flex-wrap gap-2">
+                          {movieDetails.genres.map((genre: Genre) => (
+                            <span
+                              key={genre.id}
+                              className="bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 rounded-full text-sm font-semibold text-white shadow-lg"
+                            >
+                              {genre.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Storyline Section */}
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold mb-4 text-white border-b border-gray-600 pb-2">
+                      Storyline
+                    </h2>
+                    {movieDetails.overview ? (
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        {movieDetails.overview}
+                      </p>
+                    ) : (
+                      <p className="text-gray-500 italic text-lg">
+                        No overview available.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Video Trailer Section */}
+            {trailer && (
+              <section className="mb-12">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold text-white">🎬 Official Trailer</h2>
+                </div>
+                <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl p-2 shadow-2xl border border-gray-700/50">
+                  <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
                     <iframe
-                      src={`https://www.youtube.com/embed/${video.key}`}
-                      title={video.name}
+                      src={`https://www.youtube.com/embed/${trailer.key}?rel=0&modestbranding=1`}
+                      title={trailer.name || "Movie Trailer"}
                       className="w-full h-full"
                       allowFullScreen
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-sm mb-2 line-clamp-2">
-                      {video.name}
-                    </h3>
-                    <div className="flex justify-between items-center text-xs text-gray-400">
-                      <span className="capitalize">{video.type}</span>
-                      <span>{video.site}</span>
-                    </div>
-                  </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              </section>
+            )}
 
-        {/* Cast Section */}
-        <section className="max-w-6xl mx-auto mb-12">
-          <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
-            Top Cast
-          </h2>
-          {topCast.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {topCast.map((person: CastMember) => (
-                <div
-                  key={person.id}
-                  className="bg-gray-800 rounded-lg p-4 text-center"
-                >
-                  <div className="w-20 h-20 mx-auto mb-3 relative rounded-full overflow-hidden">
-                    <Image
-                      src={
-                        person.profile_path
-                          ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
-                          : "/no-avatar.jpg"
-                      }
-                      alt={person.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-sm mb-1">{person.name}</h3>
-                  <p className="text-gray-400 text-xs">{person.character}</p>
+            {/* All Videos Section */}
+            {videos?.results && videos.results.length > 0 && (
+              <section className="mb-12">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold text-white">🎥 Videos & Clips</h2>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-center">No cast information available.</p>
-          )}
-        </section>
-
-        {/* Similar Movies Section */}
-        <section className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">
-            Similar Movies
-          </h2>
-          {similar.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {similar.map((similarMovie: SimilarMovie) => (
-                <Link
-                  key={similarMovie.id}
-                  href={`/movie/${similarMovie.id}`}
-                  className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
-                >
-                  <div className="aspect-[2/3] relative">
-                    <Image
-                      src={
-                        similarMovie.poster_path
-                          ? `https://image.tmdb.org/t/p/w300${similarMovie.poster_path}`
-                          : "/no-image.jpg"
-                      }
-                      alt={similarMovie.title || similarMovie.name || "No title"}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm line-clamp-2">
-                      {similarMovie.title || similarMovie.name}
-                    </h3>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-gray-400 text-xs">
-                        ⭐ {similarMovie.vote_average?.toFixed(1) || "N/A"}
-                      </span>
-                      <span className="text-gray-400 text-xs">
-                        {similarMovie.release_date?.substring(0, 4) || "TBA"}
-                      </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videos.results.slice(0, 6).map((video: Video) => (
+                    <div 
+                      key={video.id} 
+                      className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-[1.02]"
+                    >
+                      <div className="relative aspect-video bg-black">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${video.key}?rel=0&modestbranding=1`}
+                          title={video.name}
+                          className="w-full h-full"
+                          allowFullScreen
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors">
+                          {video.name}
+                        </h3>
+                        <div className="flex justify-between items-center text-xs text-gray-400">
+                          <span className="capitalize bg-gray-700 px-2 py-1 rounded-full">
+                            {video.type}
+                          </span>
+                          <span className="bg-gray-700 px-2 py-1 rounded-full">
+                            {video.site}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-center">No similar movies found.</p>
-          )}
-        </section>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Cast Section */}
+            <section className="mb-12">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                <h2 className="text-2xl font-bold text-white">Top Cast</h2>
+              </div>
+              
+              {topCast.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {topCast.map((person: CastMember) => (
+                    <div
+                      key={person.id}
+                      className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105"
+                    >
+                      <div className="w-20 h-20 mx-auto mb-3 relative rounded-full overflow-hidden border-2 border-gray-600 group-hover:border-blue-400 transition-colors">
+                        <Image
+                          src={
+                            person.profile_path
+                              ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
+                              : "/no-avatar.jpg"
+                          }
+                          alt={person.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <h3 className="font-semibold text-white text-sm mb-1 group-hover:text-blue-300 transition-colors">
+                        {person.name}
+                      </h3>
+                      <p className="text-gray-400 text-xs line-clamp-2">{person.character}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+                  <p className="text-gray-500 text-lg">No cast information available.</p>
+                </div>
+              )}
+            </section>
+
+            {/* Similar Movies Section */}
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                <h2 className="text-2xl font-bold text-white">Similar Movies</h2>
+              </div>
+              
+              {similar.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {similar.map((similarMovie: SimilarMovie) => (
+                    <Link
+                      key={similarMovie.id}
+                      href={`/movie/${similarMovie.id}`}
+                      className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50 hover:border-cyan-500/50 transition-all duration-300 hover:transform hover:scale-105"
+                    >
+                      <div className="aspect-[2/3] relative overflow-hidden">
+                        <Image
+                          src={
+                            similarMovie.poster_path
+                              ? `https://image.tmdb.org/t/p/w300${similarMovie.poster_path}`
+                              : "/no-image.jpg"
+                          }
+                          alt={similarMovie.title || similarMovie.name || "No title"}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-cyan-300 transition-colors">
+                          {similarMovie.title || similarMovie.name}
+                        </h3>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
+                            ⭐ {similarMovie.vote_average?.toFixed(1) || "N/A"}
+                          </span>
+                          <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
+                            {similarMovie.release_date?.substring(0, 4) || "TBA"}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+                  <p className="text-gray-500 text-lg">No similar movies found.</p>
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
       </main>
     );
   } catch (error) {
     return (
-      <main className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">❌ Movie Not Found</h1>
-          <p className="text-gray-400">
+      <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center p-6">
+        <div className="text-center bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-gray-700/50">
+          <div className="w-16 h-16 mx-auto mb-4 bg-red-500/20 rounded-full flex items-center justify-center">
+            <span className="text-2xl">❌</span>
+          </div>
+          <h1 className="text-3xl font-bold mb-4 text-white">Movie Not Found</h1>
+          <p className="text-gray-400 text-lg">
             We couldn't find details for this title. Please try another one.
           </p>
         </div>
