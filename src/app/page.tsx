@@ -19,6 +19,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SearchContext } from "./layout";
 
+// Import Lucide icons
+import { Clapperboard, Star, Flame, MonitorPlay, Trophy } from 'lucide-react';
+
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
@@ -49,6 +52,7 @@ export default function HomePage() {
     fetchData();
   }, []);
 
+  // Make sure toggleSection is defined
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -85,7 +89,7 @@ export default function HomePage() {
   const showTV = showAllSections || activeSection === "tv";
 
   return (
-    <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12"> {/* Reduced mobile padding and gap */}
+    <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
       {results ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">Search Results</h2>
@@ -96,7 +100,6 @@ export default function HomePage() {
           </div>
         </div>
       ) : (
-        // 🔹 Display regular sections if no search
         <>
           <HeroCarousel 
             items={trendingMovies.slice(0, 8)} 
@@ -105,37 +108,54 @@ export default function HomePage() {
 
           {/* Movies Section */}
           {showMovies && (
-            <div ref={moviesRef} className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0"> {/* Added mobile gap and top margin */}
+            <div ref={moviesRef} className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0">
               <ExpandableSection
-                title="🎬 Trending Movies"
+                title="Trending Movies"
+                icon={<Clapperboard className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingMovies}
                 sectionId="trending-movies"
                 isExpanded={expandedSections["trending-movies"]}
                 onToggle={() => toggleSection("trending-movies")}
               />
               <ExpandableSection
-                title="⭐ Top Rated Movies"
+                title="Top Rated Movies"
+                icon={<Star className="w-5 h-5 md:w-6 md:h-6" />}
                 items={topRatedMovies}
                 sectionId="top-rated-movies"
                 isExpanded={expandedSections["top-rated-movies"]}
                 onToggle={() => toggleSection("top-rated-movies")}
               />
+            </div>
+          )}
+
+          {/* Trend Section */}
+          {showTrend && (
+            <div ref={trendRef} className="flex flex-col gap-10 md:gap-14">
               <ExpandableSection
-                title="🔥 Trending Now"
+                title="Trending Now"
+                icon={<Flame className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingMovies}
                 sectionId="trending-now"
                 isExpanded={expandedSections["trending-now"]}
                 onToggle={() => toggleSection("trending-now")}
               />
+            </div>
+          )}
+
+          {/* TV Section */}
+          {showTV && (
+            <div ref={tvRef} className="flex flex-col gap-10 md:gap-14">
               <ExpandableSection
-                title="📺 Trending TV Shows"
+                title="Trending TV Shows"
+                icon={<MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingTV}
                 sectionId="trending-tv"
                 isExpanded={expandedSections["trending-tv"]}
                 onToggle={() => toggleSection("trending-tv")}
               />
               <ExpandableSection
-                title="🏆 Top Rated TV Shows"
+                title="Top Rated TV Shows"
+                icon={<Trophy className="w-5 h-5 md:w-6 md:h-6" />}
                 items={topRatedTV}
                 sectionId="top-rated-tv"
                 isExpanded={expandedSections["top-rated-tv"]}
@@ -149,7 +169,7 @@ export default function HomePage() {
             <div className="text-center py-6 md:py-8">
               <Button
                 onClick={() => handleNavigateToSection("home")}
-                className="bg-blue-600 text-white rounded-full px-6 py-3 hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300"
               >
                 ← Back to All Sections
               </Button>
@@ -204,12 +224,14 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
 /* ✅ Expandable Section Component */
 function ExpandableSection({
   title,
+  icon,
   items,
   sectionId,
   isExpanded,
   onToggle,
 }: {
   title: string;
+  icon: React.ReactNode;
   items: any[];
   sectionId: string;
   isExpanded: boolean;
@@ -223,7 +245,10 @@ function ExpandableSection({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
-          <h2 className="text-xl md:text-2xl font-bold text-white">{title}</h2>
+          <div className="flex items-center gap-2">
+            {icon}
+            <h2 className="text-xl md:text-2xl font-bold text-white">{title}</h2>
+          </div>
         </div>
         <Button
           variant="outline"
