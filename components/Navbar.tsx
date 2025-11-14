@@ -56,7 +56,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
 
       {/* Mobile Dropdown */}
       {menuOpen && (
-        <div className="md:hidden animate-fadeIn border-t border-white/10">
+        <div className="md:hidden ">
           {/* Links in one row */}
           <div className="max-w-7xl mx-auto px-6 py-3 flex flex-row justify-center space-x-6">
             <Link
