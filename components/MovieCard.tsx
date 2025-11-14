@@ -28,7 +28,7 @@ export default function MovieCard({ id, title, name, poster_path, type = "movie"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90" />
         <div className="absolute inset-x-0 bottom-0 p-3">
-          <h3 className="text-white/95 text-sm md:text-base font-semibold line-clamp-2">
+          <h3 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-blue-300 transition-colors">
             {title || name}
           </h3>
         </div>
