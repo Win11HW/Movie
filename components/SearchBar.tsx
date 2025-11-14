@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Search } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -25,12 +26,18 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         className="px-5 py-2.5 w-64 md:w-80 rounded-2xl border border-white/10 bg-white/5 text-white placeholder-white/60 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-white/20 transition-all"
       />
 
-      {/* Submit button */}
+      {/* Submit button with search icon */}
       <button
         type="submit"
         disabled={isPending}
-        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white disabled:opacity-50 hover:from-blue-500 hover:to-indigo-500 shadow-sm shadow-blue-500/20 transition-colors">
-        {isPending ? "..." : "Search"}
+        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white disabled:opacity-50 hover:from-blue-500 hover:to-indigo-500 shadow-sm shadow-blue-500/20 transition-colors flex items-center justify-center"
+        aria-label="Search"
+      >
+        {isPending ? (
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        ) : (
+          <Search size={20} className="text-white" />
+        )}
       </button>
     </form>
   );
