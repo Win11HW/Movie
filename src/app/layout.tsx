@@ -6,6 +6,11 @@ import Footer from "@/components/Footer";
 import { searchMovies } from "@/lib/tmdb";
 import "./globals.css";
 
+export const metadata = {
+  title: "Movielify",
+  description: "Your ultimate destination for discovering amazing movies, trailers, and detailed information.",
+}
+
 export const SearchContext = createContext({
   results: null as any[] | null,
   setResults: (r: any[] | null) => {},
