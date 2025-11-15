@@ -1,19 +1,32 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Search } from 'lucide-react';
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  onSearch?: (query: string) => void; // Make it optional
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    startTransition(() => onSearch(query));
+    
+    startTransition(() => {
+      if (query.trim()) {
+        if (onSearch && typeof onSearch === 'function') {
+          // Use the provided onSearch function if it exists and is valid
+          onSearch(query);
+        } else {
+          // Default behavior - navigate to search category
+          router.push(`/category/search?q=${encodeURIComponent(query)}`);
+        }
+      }
+    });
   };
 
   return (

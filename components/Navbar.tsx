@@ -5,11 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import SearchBar from "./SearchBar";
 
-interface NavbarProps {
-  onSearch: (query: string) => void;
-}
-
-export default function Navbar({ onSearch }: NavbarProps) {
+export default function Navbar() { // Remove onSearch prop
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleCategoryClick = () => {
@@ -54,7 +50,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
         {/* Search + Hamburger */}
         <div className="flex items-center space-x-3">
           <div className="hidden md:block">
-            <SearchBar onSearch={onSearch} />
+            <SearchBar /> {/* Remove onSearch prop */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -104,7 +100,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
 
           {/* Search visible in mobile dropdown */}
           <div className="max-w-7xl mx-auto w-full px-6 pb-4">
-            <SearchBar onSearch={onSearch} />
+            <SearchBar /> {/* Remove onSearch prop */}
           </div>
         </div>
       )}

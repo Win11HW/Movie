@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import MovieCard from "@/components/MovieCard";
 import {
   getTrendingMovies,
@@ -9,13 +9,12 @@ import {
   getTrendingTV,
   getTopRatedTV,
   getMoviesByGenre,
-  getTVByGenre,
   searchMovies
 } from "@/lib/tmdb";
 
-// Category mapping
+// Updated Category mapping to match navbar/footer links
 const categoryConfig: { [key: string]: { title: string; fetchFunction: () => Promise<any[]>; type: string } } = {
-  // Movie categories
+  // Movie categories - match navbar links
   "trending-movies": { 
     title: "Trending Movies", 
     fetchFunction: getTrendingMovies, 
@@ -27,7 +26,7 @@ const categoryConfig: { [key: string]: { title: string; fetchFunction: () => Pro
     type: "movie" 
   },
   
-  // TV categories
+  // TV categories - match navbar links
   "trending-tv": { 
     title: "Trending TV Shows", 
     fetchFunction: getTrendingTV, 
@@ -38,13 +37,15 @@ const categoryConfig: { [key: string]: { title: string; fetchFunction: () => Pro
     fetchFunction: getTopRatedTV, 
     type: "tv" 
   },
+  
+  // Trending category - match navbar link
   "trending": { 
     title: "Trending Now", 
     fetchFunction: getTrendingMovies, 
     type: "movie" 
   },
   
-  // Genre categories (Movies)
+  // Genre categories - match footer links
   "28": { 
     title: "Action Movies", 
     fetchFunction: () => getMoviesByGenre(28), 
@@ -65,57 +66,73 @@ const categoryConfig: { [key: string]: { title: string; fetchFunction: () => Pro
     fetchFunction: () => getMoviesByGenre(27), 
     type: "movie" 
   },
-  "10749": { 
-    title: "Romance Movies", 
-    fetchFunction: () => getMoviesByGenre(10749), 
-    type: "movie" 
-  },
-  "878": { 
-    title: "Sci-Fi Movies", 
-    fetchFunction: () => getMoviesByGenre(878), 
-    type: "movie" 
-  },
-  "53": { 
-    title: "Thriller Movies", 
-    fetchFunction: () => getMoviesByGenre(53), 
-    type: "movie" 
+
+  // Search category
+  "search": { 
+    title: "Search Results", 
+    fetchFunction: () => Promise.resolve([]), // Will be handled separately
+    type: "mixed" 
   },
 };
 
 export default function CategoryPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
   
   const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const category = categoryConfig[id];
-  const displayTitle = category?.title || `Category: ${id}`;
+  // Get search query if this is a search page
+  const searchQuery = searchParams?.get('q');
 
   useEffect(() => {
     async function fetchCategoryData() {
-      if (!category) {
-        setError("Category not found");
-        setIsLoading(false);
-        return;
-      }
-
       try {
         setIsLoading(true);
         setError(null);
-        const data = await category.fetchFunction();
-        setItems(data);
+
+        let data;
+        
+        // Handle search
+        if (id === "search" && searchQuery) {
+          data = await searchMovies(searchQuery);
+          if (data.length === 0) {
+            setError(`No results found for "${searchQuery}"`);
+          } else {
+            setItems(data);
+          }
+        } 
+        // Handle regular categories
+        else {
+          const category = categoryConfig[id];
+          if (!category) {
+            setError("Category not found");
+            setIsLoading(false);
+            return;
+          }
+          data = await category.fetchFunction();
+          setItems(data);
+        }
       } catch (err) {
         console.error("Error fetching category data:", err);
-        setError("Failed to load category data");
+        setError("Failed to load data");
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchCategoryData();
-  }, [id, category]);
+  }, [id, searchQuery]);
+
+  // Get page title
+  const getPageTitle = () => {
+    if (id === "search" && searchQuery) {
+      return `Search Results for "${searchQuery}"`;
+    }
+    return categoryConfig[id]?.title || `Category: ${id}`;
+  };
 
   // Show loading state
   if (isLoading) {
@@ -139,10 +156,22 @@ export default function CategoryPage() {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-900 pt-20 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Error</h1>
-          <p className="text-white/60">{error}</p>
+      <div className="min-h-screen bg-gray-900 pt-20">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            {id === "search" && searchQuery ? `Search: "${searchQuery}"` : "Error"}
+          </h1>
+          <p className="text-white/60 text-lg">{error}</p>
+          {id === "search" && searchQuery && (
+            <div className="mt-6">
+              <p className="text-white/80 mb-4">Suggestions:</p>
+              <ul className="text-white/60 list-disc list-inside space-y-1">
+                <li>Check your spelling</li>
+                <li>Try more general terms</li>
+                <li>Try different keywords</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -154,10 +183,11 @@ export default function CategoryPage() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            {displayTitle}
+            {getPageTitle()}
           </h1>
           <p className="text-white/60">
             {items.length} {items.length === 1 ? 'item' : 'items'} found
+            {id === "search" && searchQuery && ` for "${searchQuery}"`}
           </p>
         </div>
 
@@ -170,7 +200,7 @@ export default function CategoryPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-white/60 text-lg">No items found in this category.</p>
+            <p className="text-white/60 text-lg">No items found.</p>
           </div>
         )}
       </div>
