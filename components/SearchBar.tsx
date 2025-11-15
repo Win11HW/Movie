@@ -30,7 +30,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       <button
         type="submit"
         disabled={isPending}
-        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white disabled:opacity-50 hover:from-blue-700 hover:to-cyan-700 shadow-lg transition-colors flex items-center justify-center"
+        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white disabled:opacity-50 hover:from-blue-700 hover:to-cyan-700 shadow-lg transition-colors flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
         aria-label="Search"
       >
         {isPending ? (
