@@ -29,6 +29,7 @@ export default function HomePage() {
   const [topRatedTV, setTopRatedTV] = useState<any[]>([]);
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
   const [activeSection, setActiveSection] = useState<string>("home");
+  const [isLoading, setIsLoading] = useState(true);
   const { results } = useContext(SearchContext);
 
   // Refs for scrolling to sections
@@ -38,16 +39,23 @@ export default function HomePage() {
 
   useEffect(() => {
     async function fetchData() {
-      const [trendM, topM, trendT, topT] = await Promise.all([
-        getTrendingMovies(),
-        getTopRatedMovies(),
-        getTrendingTV(),
-        getTopRatedTV(),
-      ]);
-      setTrendingMovies(trendM);
-      setTopRatedMovies(topM);
-      setTrendingTV(trendT);
-      setTopRatedTV(topT);
+      setIsLoading(true);
+      try {
+        const [trendM, topM, trendT, topT] = await Promise.all([
+          getTrendingMovies(),
+          getTopRatedMovies(),
+          getTrendingTV(),
+          getTopRatedTV(),
+        ]);
+        setTrendingMovies(trendM);
+        setTopRatedMovies(topM);
+        setTrendingTV(trendT);
+        setTopRatedTV(topT);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchData();
   }, []);
@@ -87,6 +95,27 @@ export default function HomePage() {
   const showMovies = showAllSections || activeSection === "movies";
   const showTrend = showAllSections || activeSection === "trend";
   const showTV = showAllSections || activeSection === "tv";
+
+  // Show loading placeholders
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
+        {/* Hero Carousel Placeholder */}
+        <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden bg-gray-800 animate-pulse">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-white text-lg">Loading...</div>
+          </div>
+        </div>
+
+        {/* Section Placeholders */}
+        <div className="flex flex-col gap-10 md:gap-14">
+          {[1, 2, 3, 4, 5].map((item) => (
+            <SectionPlaceholder key={item} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
@@ -178,6 +207,45 @@ export default function HomePage() {
         </>
       )}
     </div>
+  );
+}
+
+/* ✅ Section Placeholder Component */
+function SectionPlaceholder() {
+  return (
+    <section className="space-y-4 md:space-y-6">
+      {/* Title Placeholder */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-8 bg-gray-700 rounded-full animate-pulse"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-gray-700 rounded animate-pulse"></div>
+            <div className="h-6 w-40 bg-gray-700 rounded animate-pulse"></div>
+          </div>
+        </div>
+        <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse"></div>
+      </div>
+
+      {/* Carousel Placeholder */}
+      <div className="relative">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <div key={item} className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50">
+              <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
+                {/* Image placeholder */}
+              </div>
+              <div className="p-3">
+                <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="h-6 w-12 bg-gray-700 rounded-full animate-pulse"></div>
+                  <div className="h-6 w-12 bg-gray-700 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
