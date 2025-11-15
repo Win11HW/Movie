@@ -100,18 +100,35 @@ export default function HomePage() {
   if (isLoading) {
     return (
       <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
-        {/* Hero Carousel Placeholder */}
+        {/* Hero Carousel Placeholder - Keep old version */}
         <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden bg-gray-800 animate-pulse">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-white text-lg">Loading...</div>
           </div>
         </div>
 
-        {/* Section Placeholders */}
+        {/* Section Placeholders - Exact structure */}
         <div className="flex flex-col gap-10 md:gap-14">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <SectionPlaceholder key={item} />
-          ))}
+          <SectionPlaceholder 
+            title="Trending Movies" 
+            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+          />
+          <SectionPlaceholder 
+            title="Top Rated Movies" 
+            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+          />
+          <SectionPlaceholder 
+            title="Trending Now" 
+            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+          />
+          <SectionPlaceholder 
+            title="Trending TV Shows" 
+            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+          />
+          <SectionPlaceholder 
+            title="Top Rated TV Shows" 
+            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+          />
         </div>
       </div>
     );
@@ -210,40 +227,45 @@ export default function HomePage() {
   );
 }
 
-/* ✅ Section Placeholder Component */
-function SectionPlaceholder() {
+/* ✅ Section Placeholder Component - Exact match to ExpandableSection */
+function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactNode }) {
   return (
     <section className="space-y-4 md:space-y-6">
-      {/* Title Placeholder */}
+      {/* Title Placeholder - Exact structure */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-1 h-8 bg-gray-700 rounded-full animate-pulse"></div>
+          <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-gray-700 rounded animate-pulse"></div>
+            {icon}
             <div className="h-6 w-40 bg-gray-700 rounded animate-pulse"></div>
           </div>
         </div>
-        <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse"></div>
+        <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse border border-gray-600"></div>
       </div>
 
-      {/* Carousel Placeholder */}
+      {/* Carousel Placeholder - Exact carousel structure */}
       <div className="relative">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="flex gap-4 md:gap-6 overflow-hidden">
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div key={item} className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50">
-              <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
-                {/* Image placeholder */}
-              </div>
-              <div className="p-3">
-                <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
-                <div className="flex items-center justify-between mt-2">
-                  <div className="h-6 w-12 bg-gray-700 rounded-full animate-pulse"></div>
-                  <div className="h-6 w-12 bg-gray-700 rounded-full animate-pulse"></div>
+            <div 
+              key={item} 
+              className="flex-[0_0_calc(50%-8px)] sm:flex-[0_0_calc(33.333%-10px)] md:flex-[0_0_calc(20%-10px)] lg:flex-[0_0_calc(16.666%-10px)]"
+            >
+              <div className="group bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-gray-700/50">
+                <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
+                  {/* Image placeholder */}
+                </div>
+                <div className="p-3">
+                  <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        
+        {/* Carousel Navigation Placeholders */}
+        <div className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 h-6 w-6 md:h-8 md:w-8 bg-gray-700 rounded-full animate-pulse border-none z-10"></div>
+        <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 h-6 w-6 md:h-8 md:w-8 bg-gray-700 rounded-full animate-pulse border-none z-10"></div>
       </div>
     </section>
   );
