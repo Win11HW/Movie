@@ -58,7 +58,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/category/18" className="textwhite/60 hover:text-white transition-colors cursor-pointer">
+                <Link href="/category/18" className="text-white/60 hover:text-white transition-colors cursor-pointer">
                   Drama
                 </Link>
               </li>
