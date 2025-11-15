@@ -215,7 +215,7 @@ export default function HomePage() {
             <div className="text-center py-6 md:py-8">
               <Button
                 onClick={() => handleNavigateToSection("home")}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 cursor-pointer"
               >
                 ← Back to All Sections
               </Button>
@@ -294,7 +294,7 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
                 </p>
                 <div className="flex gap-3 md:gap-4">
                   <Link href={`/movie/${movie.id}`}>
-                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg">
+                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
                       Watch Now →
                     </Button>
                   </Link>
@@ -304,8 +304,8 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg" />
-        <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg" />
+        <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+        <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
       </Carousel>
     </div>
   );
@@ -343,7 +343,7 @@ function ExpandableSection({
         <Button
           variant="outline"
           size="sm"
-          className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300"
+          className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
           onClick={onToggle}
         >
           {isExpanded ? "Show Less ↑" : "View More →"}
@@ -364,8 +364,8 @@ function ExpandableSection({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg" />
-            <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg" />
+            <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
+            <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
           </Carousel>
         </div>
       ) : (
