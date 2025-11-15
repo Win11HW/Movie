@@ -1,10 +1,16 @@
 import { getMovieDetails, getMovieCredits, getSimilarMovies, getMovieVideos } from "@/lib/tmdb";
 import Image from "next/image";
 import Link from "next/link";
-
-interface MoviePageProps {
-  params: Promise<{ id: string }>;
-}
+import { 
+  Star, 
+  Calendar, 
+  Clock, 
+  Clapperboard, 
+  Video, 
+  X,
+  Users,
+  Film
+} from "lucide-react";
 
 // Define TypeScript interfaces
 interface Genre {
@@ -49,6 +55,10 @@ interface Video {
   type: string;
   site: string;
   size: number;
+}
+
+interface MoviePageProps {
+  params: Promise<{ id: string }>;
 }
 
 export default async function MovieDetailPage({ params }: MoviePageProps) {
@@ -127,7 +137,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
               {/* Movie Info Card */}
               <div className="w-full lg:w-2/3">
                 <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-2xl border border-gray-700/50">
-                  {/* Title Section - Moved down here */}
+                  {/* Title Section */}
                   <div className="mb-6">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">
                       {movieDetails.title || movieDetails.name || "Untitled"}
@@ -138,7 +148,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     {/* Rating */}
                     <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
-                      <div className="text-2xl text-yellow-400">⭐</div>
+                      <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
                       <div>
                         <div className="text-sm text-gray-400">Rating</div>
                         <div className="text-xl font-bold text-white">
@@ -149,7 +159,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
 
                     {/* Release Date */}
                     <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
-                      <div className="text-2xl">📅</div>
+                      <Calendar className="w-6 h-6 text-blue-400" />
                       <div>
                         <div className="text-sm text-gray-400">Release Date</div>
                         <div className="text-xl font-bold text-white">
@@ -161,7 +171,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
                     {/* Runtime */}
                     {movieDetails.runtime && (
                       <div className="flex items-center gap-3 bg-gray-700/50 rounded-xl p-4">
-                        <div className="text-2xl">⏱️</div>
+                        <Clock className="w-6 h-6 text-green-400" />
                         <div>
                           <div className="text-sm text-gray-400">Runtime</div>
                           <div className="text-xl font-bold text-white">
@@ -214,7 +224,8 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
               <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-white">🎬 Official Trailer</h2>
+                  <Clapperboard className="w-6 h-6 text-white-400" />
+                  <h2 className="text-2xl font-bold text-white">Official Trailer</h2>
                 </div>
                 <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl p-2 shadow-2xl border border-gray-700/50">
                   <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
@@ -235,7 +246,8 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
               <section className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-white">🎥 Videos & Clips</h2>
+                  <Video className="w-6 h-6 text-white-400" />
+                  <h2 className="text-2xl font-bold text-white">Videos & Clips</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {videos.results.slice(0, 6).map((video: Video) => (
@@ -275,6 +287,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
             <section className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                <Users className="w-6 h-6 text-white-400" />
                 <h2 className="text-2xl font-bold text-white">Top Cast</h2>
               </div>
               
@@ -315,6 +328,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
             <section>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+                <Film className="w-6 h-6 text-white-400" />
                 <h2 className="text-2xl font-bold text-white">Similar Movies</h2>
               </div>
               
@@ -370,7 +384,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
       <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center p-6">
         <div className="text-center bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-gray-700/50">
           <div className="w-16 h-16 mx-auto mb-4 bg-red-500/20 rounded-full flex items-center justify-center">
-            <span className="text-2xl">❌</span>
+            <X className="w-8 h-8 text-red-400" />
           </div>
           <h1 className="text-3xl font-bold mb-4 text-white">Movie Not Found</h1>
           <p className="text-gray-400 text-lg">
