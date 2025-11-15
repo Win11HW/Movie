@@ -12,29 +12,42 @@ interface NavbarProps {
 export default function Navbar({ onSearch }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleCategoryClick = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 bg-gray-900/80 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="text-2xl font-bold">
-          <Link href="/#home" className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          <Link href="/" className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent cursor-pointer">
             🎬 Movielify
           </Link>
         </div>
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/#home" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link href="/" className="text-white/80 hover:text-white transition-colors duration-200 cursor-pointer">
             Home
           </Link>
-          <Link href="/#movies" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link 
+            href="/category/trending-movies" 
+            className="text-white/80 hover:text-white transition-colors duration-200 cursor-pointer"
+          >
             Movies
           </Link>
-          <Link href="/#trending" className="text-white/80 hover:text-white transition-colors duration-200">
+          <Link 
+            href="/category/trending" 
+            className="text-white/80 hover:text-white transition-colors duration-200 cursor-pointer"
+          >
             Trending
           </Link>
-          <Link href="/#tv" className="text-white/80 hover:text-white transition-colors duration-200">
-            TV
+          <Link 
+            href="/category/trending-tv" 
+            className="text-white/80 hover:text-white transition-colors duration-200 cursor-pointer"
+          >
+            TV Shows
           </Link>
         </div>
 
@@ -46,7 +59,7 @@ export default function Navbar({ onSearch }: NavbarProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="text-white/80 hover:text-white md:hidden transition-colors"
+            className="text-white/80 hover:text-white md:hidden transition-colors cursor-pointer"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -56,36 +69,36 @@ export default function Navbar({ onSearch }: NavbarProps) {
 
       {/* Mobile Dropdown */}
       {menuOpen && (
-        <div className="md:hidden ">
+        <div className="md:hidden border-t border-white/10">
           {/* Links in one row */}
-          <div className="max-w-7xl mx-auto px-6 py-3 flex flex-row justify-center space-x-6">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-row justify-center space-x-6">
             <Link
-              href="/#home"
-              className="text-white/90 hover:text-white transition-colors duration-200"
-              onClick={() => setMenuOpen(false)}
+              href="/"
+              className="text-white/90 hover:text-white transition-colors duration-200 cursor-pointer"
+              onClick={handleCategoryClick}
             >
               Home
             </Link>
             <Link
-              href="/#movies"
-              className="text-white/90 hover:text-white transition-colors duration-200"
-              onClick={() => setMenuOpen(false)}
+              href="/category/trending-movies"
+              className="text-white/90 hover:text-white transition-colors duration-200 cursor-pointer"
+              onClick={handleCategoryClick}
             >
               Movies
             </Link>
             <Link
-              href="/#trending"
-              className="text-white/90 hover:text-white transition-colors duration-200"
-              onClick={() => setMenuOpen(false)}
+              href="/category/trending"
+              className="text-white/90 hover:text-white transition-colors duration-200 cursor-pointer"
+              onClick={handleCategoryClick}
             >
               Trending
             </Link>
             <Link
-              href="/#tv"
-              className="text-white/90 hover:text-white transition-colors duration-200"
-              onClick={() => setMenuOpen(false)}
+              href="/category/trending-tv"
+              className="text-white/90 hover:text-white transition-colors duration-200 cursor-pointer"
+              onClick={handleCategoryClick}
             >
-              TV
+              TV Shows
             </Link>
           </div>
 

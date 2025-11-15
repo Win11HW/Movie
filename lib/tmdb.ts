@@ -28,6 +28,36 @@ export const searchMovies = async (query: string) => {
   return res.data.results;
 };
 
+// Add to your existing tmdb.ts file
+
+// Get movies by genre
+export async function getMoviesByGenre(genreId: number): Promise<any[]> {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
+    );
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error("Error fetching movies by genre:", error);
+    return [];
+  }
+}
+
+// Get TV shows by genre (if needed in the future)
+export async function getTVByGenre(genreId: number): Promise<any[]> {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
+    );
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error("Error fetching TV by genre:", error);
+    return [];
+  }
+}
+
 // ✅ Movie Videos/Trailers
 export const getMovieVideos = async (movieId: string) => {
   try {
