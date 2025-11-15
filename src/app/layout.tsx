@@ -30,6 +30,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <title>Movielify</title>
+        <meta name="description" content="Your ultimate destination for discovering amazing movies, trailers, and detailed information." />
+      </head>
       <body className="bg-gray-900 text-white min-h-screen flex flex-col">
         <SearchContext.Provider value={{ results, setResults, handleSearch }}>
           <Navbar onSearch={handleSearch} />
