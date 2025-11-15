@@ -12,6 +12,14 @@ import {
   Film
 } from "lucide-react";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 // Define TypeScript interfaces
 interface Genre {
   id: number;
@@ -287,35 +295,47 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
             <section className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
-                <Users className="w-6 h-6 text-white-400" />
+                <Users className="w-6 h-6 text-white" />
                 <h2 className="text-2xl font-bold text-white">Top Cast</h2>
               </div>
               
               {topCast.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {topCast.map((person: CastMember) => (
-                    <div
-                      key={person.id}
-                      className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105"
-                    >
-                      <div className="w-20 h-20 mx-auto mb-3 relative rounded-full overflow-hidden border-2 border-gray-600 group-hover:border-blue-400 transition-colors">
-                        <Image
-                          src={
-                            person.profile_path
-                              ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
-                              : "/no-avatar.jpg"
-                          }
-                          alt={person.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <h3 className="font-semibold text-white text-sm mb-1 group-hover:text-blue-300 transition-colors">
-                        {person.name}
-                      </h3>
-                      <p className="text-gray-400 text-xs line-clamp-2">{person.character}</p>
-                    </div>
-                  ))}
+                <div className="relative">
+                  <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                    <CarouselContent>
+                      {topCast.map((person: CastMember) => (
+                        <CarouselItem
+                          key={person.id}
+                          className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                        >
+                          <div className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105">
+                            {/* Bigger image without circular crop and no blue border */}
+                            <div className="aspect-[3/4] relative overflow-hidden">
+                              <Image
+                                src={
+                                  person.profile_path
+                                    ? `https://image.tmdb.org/t/p/w342${person.profile_path}` // Bigger image size
+                                    : "/no-avatar.jpg"
+                                }
+                                alt={person.name}
+                                fill
+                                className="object-cover group-hover:scale-110 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            </div>
+                            <div className="p-3">
+                              <h3 className="font-semibold text-white text-sm mb-1 group-hover:text-blue-300 transition-colors line-clamp-1">
+                                {person.name}
+                              </h3>
+                              <p className="text-gray-400 text-xs line-clamp-2">{person.character}</p>
+                            </div>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 border-none z-10 shadow-lg" />
+                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 border-none z-10 shadow-lg" />
+                  </Carousel>
                 </div>
               ) : (
                 <div className="text-center py-12 bg-gray-800/50 rounded-2xl border border-gray-700/50">
