@@ -96,13 +96,29 @@ export const getMovieDetails = async (id: string) => {
 // ✅ Movie Credits (using axios)
 export const getMovieCredits = async (movieId: string) => {
   try {
+    console.log('Attempting to fetch credits for movie:', movieId);
+    console.log('API Key available:', !!API_KEY); // Should log 'true'
+    
     const res = await axios.get(`${BASE_URL}/movie/${movieId}/credits`, {
       params: { api_key: API_KEY },
+      timeout: 10000, // Set a 10-second timeout
     });
+    
+    console.log('Response status:', res.status);
     return res.data;
+    
   } catch (error) {
-    console.error("Error fetching movie credits:", error);
-    return null;
+    // Log detailed error information
+    console.error('Full error details:', error);
+    
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error message:', error.message);
+      console.error('HTTP status code:', error.response?.status);
+      console.error('Response data:', error.response?.data);
+    }
+    
+    // Return a fallback or re-throw the error
+    throw error;
   }
 };
 
