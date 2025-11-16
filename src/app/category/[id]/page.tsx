@@ -169,7 +169,7 @@ export default function CategoryPage() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 pt-20">
+      <div className="min-h-screen bg-gray-900 pt-10">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Loading Skeleton matching the exact structure */}
           <section className="space-y-4 md:space-y-6">
@@ -216,7 +216,7 @@ export default function CategoryPage() {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-900 pt-20">
+      <div className="min-h-screen bg-gray-900 pt-10">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {id === "search" && searchQuery ? `Search: "${searchQuery}"` : "Error"}
@@ -238,7 +238,7 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20">
+    <div className="min-h-screen bg-gray-900 pt-10">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Exact same structure as homepage sections */}
         <section className="space-y-4 md:space-y-6">
