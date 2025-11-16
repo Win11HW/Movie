@@ -12,6 +12,9 @@ import {
   searchMovies
 } from "@/lib/tmdb";
 
+// Framer Motion
+import { motion, Variants } from "framer-motion";
+
 // Icons for different categories
 import { 
   TrendingUp, 
@@ -25,6 +28,54 @@ import {
   Drama,
   Skull
 } from 'lucide-react';
+
+// Animation variants with proper typing
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut" as const
+    }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut" as const
+    }
+  }
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const gridItemVariants: Variants = {
+  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut" as const
+    }
+  }
+};
 
 // Updated Category mapping with icons
 const categoryConfig: { [key: string]: { 
@@ -216,34 +267,63 @@ export default function CategoryPage() {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-900 pt-10">
+      <motion.div 
+        className="min-h-screen bg-gray-900 pt-10"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <motion.h1 
+            className="text-3xl md:text-4xl font-bold text-white mb-4"
+            variants={itemVariants}
+          >
             {id === "search" && searchQuery ? `Search: "${searchQuery}"` : "Error"}
-          </h1>
-          <p className="text-white/60 text-lg">{error}</p>
+          </motion.h1>
+          <motion.p 
+            className="text-white/60 text-lg"
+            variants={itemVariants}
+          >
+            {error}
+          </motion.p>
           {id === "search" && searchQuery && (
-            <div className="mt-6">
+            <motion.div 
+              className="mt-6"
+              variants={itemVariants}
+            >
               <p className="text-white/80 mb-4">Suggestions:</p>
               <ul className="text-white/60 list-disc list-inside space-y-1">
                 <li>Check your spelling</li>
                 <li>Try more general terms</li>
                 <li>Try different keywords</li>
               </ul>
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-10">
+    <motion.div 
+      className="min-h-screen bg-gray-900 pt-10"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Exact same structure as homepage sections */}
-        <section className="space-y-4 md:space-y-6">
+        {/* Exact same structure as homepage sections with Framer Motion */}
+        <motion.section 
+          className="space-y-4 md:space-y-6"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Header with blue bar and icon - identical to homepage */}
-          <div className="flex items-center justify-between">
+          <motion.div 
+            className="flex items-center justify-between"
+            variants={itemVariants}
+          >
             <div className="flex items-center gap-3">
               <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
               <div className="flex items-center gap-2">
@@ -257,22 +337,41 @@ export default function CategoryPage() {
             <div className="text-white/60 text-sm border border-white/10 bg-white/5 px-3 py-1 rounded-full">
               {items.length} {items.length === 1 ? 'item' : 'items'}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Movies/TV Shows Grid */}
+          {/* Movies/TV Shows Grid with staggered animation */}
           {items.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-              {items.map((item) => (
-                <MovieCard key={item.id} {...item} />
+            <motion.div 
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {items.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  variants={gridItemVariants}
+                  custom={index}
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <MovieCard {...item} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
-            <div className="text-center py-12">
+            <motion.div 
+              className="text-center py-12"
+              variants={itemVariants}
+            >
               <p className="text-white/60 text-lg">No items found.</p>
-            </div>
+            </motion.div>
           )}
-        </section>
+        </motion.section>
       </div>
-    </div>
+    </motion.div>
   );
 }
