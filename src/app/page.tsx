@@ -18,8 +18,112 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+// Framer Motion
+import { motion, AnimatePresence, Variants } from "framer-motion";
+
 // Import Lucide icons
 import { Clapperboard, Star, Flame, MonitorPlay, Trophy } from 'lucide-react';
+
+// Animation variants with proper typing
+const fadeUpVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    y: 60,
+    scale: 0.95 
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+    }
+  }
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    }
+  }
+};
+
+// Separate variants for different elements
+const cardVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    y: 30,
+    scale: 0.9 
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+    }
+  },
+  hover: {
+    y: -8,
+    scale: 1.05,
+    transition: {
+      duration: 0.3,
+    }
+  }
+};
+
+const titleVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    y: 20 
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      duration: 0.5,
+    }
+  }
+};
+
+const heroVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 1.2,
+    }
+  }
+};
+
+const buttonVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    y: 20,
+    scale: 0.95 
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+    }
+  },
+  hover: {
+    scale: 1.05,
+    transition: {
+      duration: 0.2,
+    }
+  },
+  tap: {
+    scale: 0.95,
+  }
+};
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
@@ -30,9 +134,6 @@ export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("home");
   const [isLoading, setIsLoading] = useState(true);
   
-  // REMOVED: SearchContext usage
-  // const { results } = useContext(SearchContext);
-
   // Refs for scrolling to sections
   const moviesRef = useRef<HTMLDivElement>(null);
   const trendRef = useRef<HTMLDivElement>(null);
@@ -101,7 +202,7 @@ export default function HomePage() {
   if (isLoading) {
     return (
       <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
-        {/* Hero Carousel Placeholder - Keep old version */}
+        {/* Hero Carousel Placeholder */}
         <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden bg-gray-800 animate-pulse">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-white text-lg">Loading...</div>
@@ -136,18 +237,35 @@ export default function HomePage() {
   }
 
   return (
-    <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
-      {/* REMOVED: Search results conditional rendering */}
-      {/* Now we only show the regular homepage content */}
-      <>
+    <motion.div 
+      className="p-4 md:p-6 flex flex-col gap-8 md:gap-12"
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+    >
+      {/* Hero Carousel with Fade Up */}
+      <motion.div
+        variants={heroVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <HeroCarousel 
           items={trendingMovies.slice(0, 8)} 
           onNavigateToSection={handleNavigateToSection}
         />
+      </motion.div>
 
-        {/* Movies Section */}
+      {/* Movies Section with Fade Up */}
+      <AnimatePresence>
         {showMovies && (
-          <div ref={moviesRef} className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0">
+          <motion.div 
+            ref={moviesRef} 
+            className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0"
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
             <ExpandableSection
               title="Trending Movies"
               icon={<Clapperboard className="w-5 h-5 md:w-6 md:h-6" />}
@@ -164,12 +282,21 @@ export default function HomePage() {
               isExpanded={expandedSections["top-rated-movies"]}
               onToggle={() => toggleSection("top-rated-movies")}
             />
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Trend Section */}
+      {/* Trend Section with Fade Up */}
+      <AnimatePresence>
         {showTrend && (
-          <div ref={trendRef} className="flex flex-col gap-10 md:gap-14">
+          <motion.div 
+            ref={trendRef} 
+            className="flex flex-col gap-10 md:gap-14"
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
             <ExpandableSection
               title="Trending Now"
               icon={<Flame className="w-5 h-5 md:w-6 md:h-6" />}
@@ -178,12 +305,21 @@ export default function HomePage() {
               isExpanded={expandedSections["trending-now"]}
               onToggle={() => toggleSection("trending-now")}
             />
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* TV Section */}
+      {/* TV Section with Fade Up */}
+      <AnimatePresence>
         {showTV && (
-          <div ref={tvRef} className="flex flex-col gap-10 md:gap-14">
+          <motion.div 
+            ref={tvRef} 
+            className="flex flex-col gap-10 md:gap-14"
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
             <ExpandableSection
               title="Trending TV Shows"
               icon={<MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />}
@@ -200,22 +336,36 @@ export default function HomePage() {
               isExpanded={expandedSections["top-rated-tv"]}
               onToggle={() => toggleSection("top-rated-tv")}
             />
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Show message when a specific section is active */}
+      {/* Show message when a specific section is active */}
+      <AnimatePresence>
         {!showAllSections && (
-          <div className="text-center py-6 md:py-8">
-            <Button
-              onClick={() => handleNavigateToSection("home")}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 cursor-pointer"
+          <motion.div 
+            className="text-center py-6 md:py-8"
+            variants={buttonVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            <motion.div
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
-              ← Back to All Sections
-            </Button>
-          </div>
+              <Button
+                onClick={() => handleNavigateToSection("home")}
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 cursor-pointer"
+              >
+                ← Back to All Sections
+              </Button>
+            </motion.div>
+          </motion.div>
         )}
-      </>
-    </div>
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -263,35 +413,72 @@ function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactN
   );
 }
 
-/* ✅ Hero Carousel Component */
+/* ✅ Hero Carousel Component with Framer Motion */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
   return (
-    <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden">
+    <motion.div 
+      className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden"
+      initial={{ opacity: 0, scale: 1.05 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+    >
       <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
         <CarouselContent>
-          {items.map((movie) => (
+          {items.map((movie, index) => (
             <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]">
-              <img
-                src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                alt={movie.title || "Movie"}
-                className="w-full h-full object-cover brightness-75"
-              />
+              <motion.div
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: index * 0.1,
+                  ease: "easeOut" 
+                }}
+                className="w-full h-full"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                  alt={movie.title || "Movie"}
+                  className="w-full h-full object-cover brightness-75"
+                />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
-                <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
-                  {movie.title}
-                </h2>
-                <p className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3">
-                  {movie.overview}
-                </p>
-                <div className="flex gap-3 md:gap-4">
-                  <Link href={`/movie/${movie.id}`}>
-                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
-                      Watch Now →
-                    </Button>
-                  </Link>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
+                  >
+                    <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
+                      {movie.title}
+                    </h2>
+                    <motion.p 
+                      className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                    >
+                      {movie.overview}
+                    </motion.p>
+                    <motion.div 
+                      className="flex gap-3 md:gap-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 + index * 0.1 }}
+                    >
+                      <Link href={`/movie/${movie.id}`}>
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
+                            Watch Now →
+                          </Button>
+                        </motion.div>
+                      </Link>
+                    </motion.div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -299,11 +486,11 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
         <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
         <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
       </Carousel>
-    </div>
+    </motion.div>
   );
 }
 
-/* ✅ Expandable Section Component */
+/* ✅ Expandable Section Component with Framer Motion */
 function ExpandableSection({
   title,
   icon,
@@ -323,8 +510,17 @@ function ExpandableSection({
   const displayedItems = isExpanded ? items : items.slice(0, 10);
 
   return (
-    <section className="space-y-4 md:space-y-6">
-      <div className="flex items-center justify-between">
+    <motion.section 
+      className="space-y-4 md:space-y-6"
+      variants={fadeUpVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+    >
+      <motion.div 
+        className="flex items-center justify-between"
+        variants={titleVariants}
+      >
         <div className="flex items-center gap-3">
           <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
           <div className="flex items-center gap-2">
@@ -332,27 +528,41 @@ function ExpandableSection({
             <h2 className="text-xl md:text-2xl font-bold text-white">{title}</h2>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
-          onClick={onToggle}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          {isExpanded ? "Show Less ↑" : "View More →"}
-        </Button>
-      </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
+            onClick={onToggle}
+          >
+            {isExpanded ? "Show Less ↑" : "View More →"}
+          </Button>
+        </motion.div>
+      </motion.div>
 
       {!isExpanded ? (
-        // Carousel view for collapsed state
+        // Carousel view for collapsed state - Each card with fade-up
         <div className="relative">
           <Carousel opts={{ align: "start", loop: true }} className="w-full">
             <CarouselContent>
-              {displayedItems.map((item) => (
+              {displayedItems.map((item, index) => (
                 <CarouselItem
                   key={item.id}
                   className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
                 >
-                  <MovieCard {...item} />
+                  <motion.div
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    whileHover="hover"
+                    custom={index}
+                  >
+                    <MovieCard {...item} />
+                  </motion.div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -361,13 +571,25 @@ function ExpandableSection({
           </Carousel>
         </div>
       ) : (
-        // Grid view for expanded state
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-          {displayedItems.map((item) => (
-            <MovieCard key={item.id} {...item} />
+        // Grid view for expanded state - Each card with fade-up and stagger
+        <motion.div 
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {displayedItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              variants={cardVariants}
+              whileHover="hover"
+              custom={index}
+            >
+              <MovieCard {...item} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </section>
+    </motion.section>
   );
 }
