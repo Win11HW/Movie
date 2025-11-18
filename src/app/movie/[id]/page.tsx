@@ -289,8 +289,8 @@ export default function MovieDetailPage() {
   // Get top 10 cast members
   const topCast = (credits?.cast?.slice(0, 10) || []) as CastMember[];
   
-  // Get similar movies (up to 6)
-  const similar = (similarMovies?.results?.slice(0, 6) || []) as SimilarMovie[];
+  // Get similar movies (up to 10 for carousel)
+  const similar = (similarMovies?.results?.slice(0, 10) || []) as SimilarMovie[];
 
   // Get trailer video (first YouTube trailer found)
   const trailer = (videos?.results || []).find(
@@ -711,7 +711,7 @@ export default function MovieDetailPage() {
               )}
             </m.section>
 
-            {/* Similar Movies Section */}
+            {/* Similar Movies Section with Carousel */}
             <m.section
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
@@ -733,49 +733,59 @@ export default function MovieDetailPage() {
               
               {similar.length > 0 ? (
                 <m.div 
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+                  className="relative"
                   variants={staggerContainer}
                 >
-                  {similar.map((similarMovie: SimilarMovie, index: number) => (
-                    <m.div
-                      key={similarMovie.id}
-                      variants={cardVariants}
-                      whileHover="hover"
-                      custom={index}
-                    >
-                      <Link
-                        href={`/movie/${similarMovie.id}`}
-                        className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50 hover:border-cyan-500/50 transition-all duration-500 block"
-                      >
-                        <div className="aspect-[2/3] relative overflow-hidden">
-                          <Image
-                            src={
-                              similarMovie.poster_path
-                                ? `https://image.tmdb.org/t/p/w300${similarMovie.poster_path}`
-                                : "/no-image.jpg"
-                            }
-                            alt={similarMovie.title || similarMovie.name || "No title"}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        </div>
-                        <div className="p-3">
-                          <h3 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-cyan-300 transition-colors duration-500">
-                            {similarMovie.title || similarMovie.name}
-                          </h3>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
-                              ⭐ {similarMovie.vote_average?.toFixed(1) || "N/A"}
-                            </span>
-                            <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
-                              {similarMovie.release_date?.substring(0, 4) || "TBA"}
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </m.div>
-                  ))}
+                  <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                    <CarouselContent>
+                      {similar.map((similarMovie: SimilarMovie, index: number) => (
+                        <CarouselItem
+                          key={similarMovie.id}
+                          className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                        >
+                          <m.div
+                            variants={cardVariants}
+                            whileHover="hover"
+                            custom={index}
+                          >
+                            <Link
+                              href={`/movie/${similarMovie.id}`}
+                              className="group bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50 hover:border-cyan-500/50 transition-all duration-500 block"
+                            >
+                              <div className="aspect-[2/3] relative overflow-hidden">
+                                <Image
+                                  src={
+                                    similarMovie.poster_path
+                                      ? `https://image.tmdb.org/t/p/w300${similarMovie.poster_path}`
+                                      : "/no-image.jpg"
+                                  }
+                                  alt={similarMovie.title || similarMovie.name || "No title"}
+                                  fill
+                                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                              </div>
+                              <div className="p-3">
+                                <h3 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-cyan-300 transition-colors duration-500">
+                                  {similarMovie.title || similarMovie.name}
+                                </h3>
+                                <div className="flex items-center justify-between mt-2">
+                                  <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
+                                    ⭐ {similarMovie.vote_average?.toFixed(1) || "N/A"}
+                                  </span>
+                                  <span className="text-gray-400 text-xs bg-gray-700 px-2 py-1 rounded-full">
+                                    {similarMovie.release_date?.substring(0, 4) || "TBA"}
+                                  </span>
+                                </div>
+                              </div>
+                            </Link>
+                          </m.div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
+                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
+                  </Carousel>
                 </m.div>
               ) : (
                 <m.div 
