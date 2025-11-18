@@ -18,14 +18,14 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-// Framer Motion
-import { motion, AnimatePresence, Variants } from "framer-motion";
+// Framer Motion with LazyMotion for minimal bundle size
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 
 // Import Lucide icons
 import { Clapperboard, Star, Flame, MonitorPlay, Trophy } from 'lucide-react';
 
 // Animation variants with proper typing
-const fadeUpVariants: Variants = {
+const fadeUpVariants = {
   hidden: { 
     opacity: 0, 
     y: 60,
@@ -41,7 +41,7 @@ const fadeUpVariants: Variants = {
   }
 };
 
-const staggerContainer: Variants = {
+const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -53,7 +53,7 @@ const staggerContainer: Variants = {
 };
 
 // Separate variants for different elements
-const cardVariants: Variants = {
+const cardVariants = {
   hidden: { 
     opacity: 0, 
     y: 30,
@@ -76,7 +76,7 @@ const cardVariants: Variants = {
   }
 };
 
-const titleVariants: Variants = {
+const titleVariants = {
   hidden: { 
     opacity: 0, 
     y: 20 
@@ -90,7 +90,7 @@ const titleVariants: Variants = {
   }
 };
 
-const heroVariants: Variants = {
+const heroVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -100,7 +100,7 @@ const heroVariants: Variants = {
   }
 };
 
-const buttonVariants: Variants = {
+const buttonVariants = {
   hidden: { 
     opacity: 0, 
     y: 20,
@@ -201,175 +201,179 @@ export default function HomePage() {
   // Show loading placeholders
   if (isLoading) {
     return (
-      <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
-        {/* Hero Carousel Placeholder */}
-        <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden bg-gray-800 animate-pulse">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-white text-lg">Loading...</div>
+      <LazyMotion features={domAnimation}>
+        <div className="p-4 md:p-6 flex flex-col gap-8 md:gap-12">
+          {/* Hero Carousel Placeholder */}
+          <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden bg-gray-800 animate-pulse">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-white text-lg">Loading...</div>
+            </div>
+          </div>
+
+          {/* Section Placeholders - Exact structure */}
+          <div className="flex flex-col gap-10 md:gap-14">
+            <SectionPlaceholder 
+              title="Trending Movies" 
+              icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+            />
+            <SectionPlaceholder 
+              title="Top Rated Movies" 
+              icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+            />
+            <SectionPlaceholder 
+              title="Trending Now" 
+              icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+            />
+            <SectionPlaceholder 
+              title="Trending TV Shows" 
+              icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+            />
+            <SectionPlaceholder 
+              title="Top Rated TV Shows" 
+              icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
+            />
           </div>
         </div>
-
-        {/* Section Placeholders - Exact structure */}
-        <div className="flex flex-col gap-10 md:gap-14">
-          <SectionPlaceholder 
-            title="Trending Movies" 
-            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
-          />
-          <SectionPlaceholder 
-            title="Top Rated Movies" 
-            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
-          />
-          <SectionPlaceholder 
-            title="Trending Now" 
-            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
-          />
-          <SectionPlaceholder 
-            title="Trending TV Shows" 
-            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
-          />
-          <SectionPlaceholder 
-            title="Top Rated TV Shows" 
-            icon={<div className="w-5 h-5 md:w-6 md:h-6 bg-gray-700 rounded animate-pulse"></div>}
-          />
-        </div>
-      </div>
+      </LazyMotion>
     );
   }
 
   return (
-    <motion.div 
-      className="p-4 md:p-6 flex flex-col gap-8 md:gap-12"
-      initial="hidden"
-      animate="visible"
-      variants={staggerContainer}
-    >
-      {/* Hero Carousel with Fade Up */}
-      <motion.div
-        variants={heroVariants}
+    <LazyMotion features={domAnimation} strict>
+      <m.div 
+        className="p-4 md:p-6 flex flex-col gap-8 md:gap-12"
         initial="hidden"
         animate="visible"
+        variants={staggerContainer}
       >
-        <HeroCarousel 
-          items={trendingMovies.slice(0, 8)} 
-          onNavigateToSection={handleNavigateToSection}
-        />
-      </motion.div>
+        {/* Hero Carousel with Fade Up */}
+        <m.div
+          variants={heroVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <HeroCarousel 
+            items={trendingMovies.slice(0, 8)} 
+            onNavigateToSection={handleNavigateToSection}
+          />
+        </m.div>
 
-      {/* Movies Section with Fade Up */}
-      <AnimatePresence>
-        {showMovies && (
-          <motion.div 
-            ref={moviesRef} 
-            className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0"
-            variants={fadeUpVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <ExpandableSection
-              title="Trending Movies"
-              icon={<Clapperboard className="w-5 h-5 md:w-6 md:h-6" />}
-              items={trendingMovies}
-              sectionId="trending-movies"
-              isExpanded={expandedSections["trending-movies"]}
-              onToggle={() => toggleSection("trending-movies")}
-            />
-            <ExpandableSection
-              title="Top Rated Movies"
-              icon={<Star className="w-5 h-5 md:w-6 md:h-6" />}
-              items={topRatedMovies}
-              sectionId="top-rated-movies"
-              isExpanded={expandedSections["top-rated-movies"]}
-              onToggle={() => toggleSection("top-rated-movies")}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Trend Section with Fade Up */}
-      <AnimatePresence>
-        {showTrend && (
-          <motion.div 
-            ref={trendRef} 
-            className="flex flex-col gap-10 md:gap-14"
-            variants={fadeUpVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <ExpandableSection
-              title="Trending Now"
-              icon={<Flame className="w-5 h-5 md:w-6 md:h-6" />}
-              items={trendingMovies}
-              sectionId="trending-now"
-              isExpanded={expandedSections["trending-now"]}
-              onToggle={() => toggleSection("trending-now")}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* TV Section with Fade Up */}
-      <AnimatePresence>
-        {showTV && (
-          <motion.div 
-            ref={tvRef} 
-            className="flex flex-col gap-10 md:gap-14"
-            variants={fadeUpVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <ExpandableSection
-              title="Trending TV Shows"
-              icon={<MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />}
-              items={trendingTV}
-              sectionId="trending-tv"
-              isExpanded={expandedSections["trending-tv"]}
-              onToggle={() => toggleSection("trending-tv")}
-            />
-            <ExpandableSection
-              title="Top Rated TV Shows"
-              icon={<Trophy className="w-5 h-5 md:w-6 md:h-6" />}
-              items={topRatedTV}
-              sectionId="top-rated-tv"
-              isExpanded={expandedSections["top-rated-tv"]}
-              onToggle={() => toggleSection("top-rated-tv")}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Show message when a specific section is active */}
-      <AnimatePresence>
-        {!showAllSections && (
-          <motion.div 
-            className="text-center py-6 md:py-8"
-            variants={buttonVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <motion.div
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
+        {/* Movies Section with Fade Up */}
+        <AnimatePresence>
+          {showMovies && (
+            <m.div 
+              ref={moviesRef} 
+              className="flex flex-col gap-10 md:gap-14 mt-4 md:mt-0"
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
             >
-              <Button
-                onClick={() => handleNavigateToSection("home")}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 cursor-pointer"
+              <ExpandableSection
+                title="Trending Movies"
+                icon={<Clapperboard className="w-5 h-5 md:w-6 md:h-6" />}
+                items={trendingMovies}
+                sectionId="trending-movies"
+                isExpanded={expandedSections["trending-movies"]}
+                onToggle={() => toggleSection("trending-movies")}
+              />
+              <ExpandableSection
+                title="Top Rated Movies"
+                icon={<Star className="w-5 h-5 md:w-6 md:h-6" />}
+                items={topRatedMovies}
+                sectionId="top-rated-movies"
+                isExpanded={expandedSections["top-rated-movies"]}
+                onToggle={() => toggleSection("top-rated-movies")}
+              />
+            </m.div>
+          )}
+        </AnimatePresence>
+
+        {/* Trend Section with Fade Up */}
+        <AnimatePresence>
+          {showTrend && (
+            <m.div 
+              ref={trendRef} 
+              className="flex flex-col gap-10 md:gap-14"
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              <ExpandableSection
+                title="Trending Now"
+                icon={<Flame className="w-5 h-5 md:w-6 md:h-6" />}
+                items={trendingMovies}
+                sectionId="trending-now"
+                isExpanded={expandedSections["trending-now"]}
+                onToggle={() => toggleSection("trending-now")}
+              />
+            </m.div>
+          )}
+        </AnimatePresence>
+
+        {/* TV Section with Fade Up */}
+        <AnimatePresence>
+          {showTV && (
+            <m.div 
+              ref={tvRef} 
+              className="flex flex-col gap-10 md:gap-14"
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              <ExpandableSection
+                title="Trending TV Shows"
+                icon={<MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />}
+                items={trendingTV}
+                sectionId="trending-tv"
+                isExpanded={expandedSections["trending-tv"]}
+                onToggle={() => toggleSection("trending-tv")}
+              />
+              <ExpandableSection
+                title="Top Rated TV Shows"
+                icon={<Trophy className="w-5 h-5 md:w-6 md:h-6" />}
+                items={topRatedTV}
+                sectionId="top-rated-tv"
+                isExpanded={expandedSections["top-rated-tv"]}
+                onToggle={() => toggleSection("top-rated-tv")}
+              />
+            </m.div>
+          )}
+        </AnimatePresence>
+
+        {/* Show message when a specific section is active */}
+        <AnimatePresence>
+          {!showAllSections && (
+            <m.div 
+              className="text-center py-6 md:py-8"
+              variants={buttonVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              <m.div
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
               >
-                ← Back to All Sections
-              </Button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+                <Button
+                  onClick={() => handleNavigateToSection("home")}
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-6 py-3 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 cursor-pointer"
+                >
+                  ← Back to All Sections
+                </Button>
+              </m.div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </m.div>
+    </LazyMotion>
   );
 }
 
-/* ✅ Section Placeholder Component - Exact match to ExpandableSection */
+/* Section Placeholder Component - Exact match to ExpandableSection */
 function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactNode }) {
   return (
     <section className="space-y-4 md:space-y-6">
@@ -413,84 +417,86 @@ function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactN
   );
 }
 
-/* ✅ Hero Carousel Component with Framer Motion */
+/* Hero Carousel Component with Framer Motion */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
   return (
-    <motion.div 
-      className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden"
-      initial={{ opacity: 0, scale: 1.05 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1, ease: "easeOut" }}
-    >
-      <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
-        <CarouselContent>
-          {items.map((movie, index) => (
-            <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]">
-              <motion.div
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.1,
-                  ease: "easeOut" 
-                }}
-                className="w-full h-full"
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                  alt={movie.title || "Movie"}
-                  className="w-full h-full object-cover brightness-75"
-                />
+    <LazyMotion features={domAnimation}>
+      <m.div 
+        className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden"
+        initial={{ opacity: 0, scale: 1.05 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      >
+        <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
+          <CarouselContent>
+            {items.map((movie, index) => (
+              <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]">
+                <m.div
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: index * 0.1,
+                    ease: "easeOut" 
+                  }}
+                  className="w-full h-full"
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                    alt={movie.title || "Movie"}
+                    className="w-full h-full object-cover brightness-75"
+                  />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
-                  >
-                    <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
-                      {movie.title}
-                    </h2>
-                    <motion.p 
-                      className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
-                    >
-                      {movie.overview}
-                    </motion.p>
-                    <motion.div 
-                      className="flex gap-3 md:gap-4"
-                      initial={{ opacity: 0, y: 20 }}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
+                    <m.div
+                      initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7 + index * 0.1 }}
+                      transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
                     >
-                      <Link href={`/movie/${movie.id}`}>
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
-                            Watch Now →
-                          </Button>
-                        </motion.div>
-                      </Link>
-                    </motion.div>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
+                      <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
+                        {movie.title}
+                      </h2>
+                      <m.p 
+                        className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                      >
+                        {movie.overview}
+                      </m.p>
+                      <m.div 
+                        className="flex gap-3 md:gap-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 + index * 0.1 }}
+                      >
+                        <Link href={`/movie/${movie.id}`}>
+                          <m.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
+                              Watch Now →
+                            </Button>
+                          </m.div>
+                        </Link>
+                      </m.div>
+                    </m.div>
+                  </div>
+                </m.div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
 
-        <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
-        <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
-      </Carousel>
-    </motion.div>
+          <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+          <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+        </Carousel>
+      </m.div>
+    </LazyMotion>
   );
 }
 
-/* ✅ Expandable Section Component with Framer Motion */
+/* Expandable Section Component with Framer Motion */
 function ExpandableSection({
   title,
   icon,
@@ -510,86 +516,88 @@ function ExpandableSection({
   const displayedItems = isExpanded ? items : items.slice(0, 10);
 
   return (
-    <motion.section 
-      className="space-y-4 md:space-y-6"
-      variants={fadeUpVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-    >
-      <motion.div 
-        className="flex items-center justify-between"
-        variants={titleVariants}
+    <LazyMotion features={domAnimation}>
+      <m.section 
+        className="space-y-4 md:space-y-6"
+        variants={fadeUpVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
-          <div className="flex items-center gap-2">
-            {icon}
-            <h2 className="text-xl md:text-2xl font-bold text-white">{title}</h2>
+        <m.div 
+          className="flex items-center justify-between"
+          variants={titleVariants}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+            <div className="flex items-center gap-2">
+              {icon}
+              <h2 className="text-xl md:text-2xl font-bold text-white">{title}</h2>
+            </div>
           </div>
-        </div>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
-            onClick={onToggle}
+          <m.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {isExpanded ? "Show Less ↑" : "View More →"}
-          </Button>
-        </motion.div>
-      </motion.div>
-
-      {!isExpanded ? (
-        // Carousel view for collapsed state - Each card with fade-up
-        <div className="relative">
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent>
-              {displayedItems.map((item, index) => (
-                <CarouselItem
-                  key={item.id}
-                  className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
-                >
-                  <motion.div
-                    variants={cardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    whileHover="hover"
-                    custom={index}
-                  >
-                    <MovieCard {...item} />
-                  </motion.div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
-            <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
-          </Carousel>
-        </div>
-      ) : (
-        // Grid view for expanded state - Each card with fade-up and stagger
-        <motion.div 
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          {displayedItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              variants={cardVariants}
-              whileHover="hover"
-              custom={index}
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
+              onClick={onToggle}
             >
-              <MovieCard {...item} />
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </motion.section>
+              {isExpanded ? "Show Less ↑" : "View More →"}
+            </Button>
+          </m.div>
+        </m.div>
+
+        {!isExpanded ? (
+          // Carousel view for collapsed state - Each card with fade-up
+          <div className="relative">
+            <Carousel opts={{ align: "start", loop: true }} className="w-full">
+              <CarouselContent>
+                {displayedItems.map((item, index) => (
+                  <CarouselItem
+                    key={item.id}
+                    className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+                  >
+                    <m.div
+                      variants={cardVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      whileHover="hover"
+                      custom={index}
+                    >
+                      <MovieCard {...item} />
+                    </m.div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
+              <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
+            </Carousel>
+          </div>
+        ) : (
+          // Grid view for expanded state - Each card with fade-up and stagger
+          <m.div 
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {displayedItems.map((item, index) => (
+              <m.div
+                key={item.id}
+                variants={cardVariants}
+                whileHover="hover"
+                custom={index}
+              >
+                <MovieCard {...item} />
+              </m.div>
+            ))}
+          </m.div>
+        )}
+      </m.section>
+    </LazyMotion>
   );
 }
