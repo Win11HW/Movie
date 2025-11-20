@@ -11,16 +11,16 @@ const fetchFromTMDB = async (endpoint: string, params = {}) => {
   return res.data.results;
 };
 
-// ✅ Movie lists
+// Movie lists
 export const getPopularMovies = () => fetchFromTMDB("/movie/popular");
 export const getTrendingMovies = () => fetchFromTMDB("/trending/movie/day");
 export const getTopRatedMovies = () => fetchFromTMDB("/movie/top_rated");
 
-// ✅ TV lists
+// TV lists
 export const getTrendingTV = () => fetchFromTMDB("/trending/tv/day");
 export const getTopRatedTV = () => fetchFromTMDB("/tv/top_rated");
 
-// ✅ Search
+// Search
 export const searchMovies = async (query: string) => {
   const res = await axios.get(`${BASE_URL}/search/movie`, {
     params: { api_key: API_KEY, query },
@@ -28,13 +28,11 @@ export const searchMovies = async (query: string) => {
   return res.data.results;
 };
 
-// Add to your existing tmdb.ts file
-
-// Get movies by genre
+// FIXED — unified API key
 export async function getMoviesByGenre(genreId: number): Promise<any[]> {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
+      `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
     );
     const data = await response.json();
     return data.results || [];
@@ -44,11 +42,10 @@ export async function getMoviesByGenre(genreId: number): Promise<any[]> {
   }
 }
 
-// Get TV shows by genre (if needed in the future)
 export async function getTVByGenre(genreId: number): Promise<any[]> {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
+      `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`
     );
     const data = await response.json();
     return data.results || [];
@@ -58,7 +55,7 @@ export async function getTVByGenre(genreId: number): Promise<any[]> {
   }
 }
 
-// ✅ Movie Videos/Trailers
+// Movie Videos
 export const getMovieVideos = async (movieId: string) => {
   try {
     const res = await axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
@@ -71,7 +68,7 @@ export const getMovieVideos = async (movieId: string) => {
   }
 };
 
-// ✅ Details (Movie or TV)
+// Details
 export const getMovieDetails = async (id: string) => {
   try {
     const res = await axios.get(`${BASE_URL}/movie/${id}`, {
@@ -93,36 +90,21 @@ export const getMovieDetails = async (id: string) => {
   }
 };
 
-// ✅ Movie Credits (using axios)
+// Credits
 export const getMovieCredits = async (movieId: string) => {
   try {
-    console.log('Attempting to fetch credits for movie:', movieId);
-    console.log('API Key available:', !!API_KEY); // Should log 'true'
-    
     const res = await axios.get(`${BASE_URL}/movie/${movieId}/credits`, {
       params: { api_key: API_KEY },
-      timeout: 10000, // Set a 10-second timeout
+      timeout: 10000,
     });
-    
-    console.log('Response status:', res.status);
     return res.data;
-    
   } catch (error) {
-    // Log detailed error information
-    console.error('Full error details:', error);
-    
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error message:', error.message);
-      console.error('HTTP status code:', error.response?.status);
-      console.error('Response data:', error.response?.data);
-    }
-    
-    // Return a fallback or re-throw the error
+    console.error("Error fetching credits:", error);
     throw error;
   }
 };
 
-// ✅ Similar Movies (using axios)
+// Similar movies
 export const getSimilarMovies = async (movieId: string) => {
   try {
     const res = await axios.get(`${BASE_URL}/movie/${movieId}/similar`, {
