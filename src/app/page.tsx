@@ -417,8 +417,35 @@ function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactN
   );
 }
 
-/* Hero Carousel Component with Framer Motion */
+/* Hero Carousel Component with Framer Motion *//* Hero Carousel Component with Auto-Sliding Only */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto slide configuration
+  const AUTO_SLIDE_INTERVAL = 7000; // 7 seconds
+
+  // Initialize auto slide
+  useEffect(() => {
+    autoSlideRef.current = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % items.length);
+    }, AUTO_SLIDE_INTERVAL);
+
+    return () => {
+      if (autoSlideRef.current) {
+        clearInterval(autoSlideRef.current);
+      }
+    };
+  }, [items.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => (prev + 1) % items.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(prev => (prev - 1 + items.length) % items.length);
+  };
+
   return (
     <LazyMotion features={domAnimation}>
       <m.div 
@@ -427,10 +454,17 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}
       >
-        <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
-          <CarouselContent>
+        <Carousel 
+          opts={{ 
+            loop: true, 
+            align: "center",
+            startIndex: currentSlide
+          }} 
+          className="w-full h-full"
+        >
+          <CarouselContent style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
             {items.map((movie, index) => (
-              <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]">
+              <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh] basis-full">
                 <m.div
                   initial={{ opacity: 0, scale: 1.1 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -488,8 +522,14 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
             ))}
           </CarouselContent>
 
-          <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
-          <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+          <CarouselPrevious 
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer"
+            onClick={prevSlide}
+          />
+          <CarouselNext 
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer"
+            onClick={nextSlide}
+          />
         </Carousel>
       </m.div>
     </LazyMotion>
