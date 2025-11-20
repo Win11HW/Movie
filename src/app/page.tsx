@@ -417,7 +417,7 @@ function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactN
   );
 }
 
-/* Hero Carousel Component with Framer Motion *//* Hero Carousel Component with Auto-Sliding Only */
+/* Hero Carousel Component with Auto-Sliding Only */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
@@ -478,10 +478,10 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
                   <img
                     src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
                     alt={movie.title || "Movie"}
-                    className="w-full h-full object-cover brightness-75"
+                    className="w-full h-full object-cover brightness-75 rounded-2xl"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent flex flex-col justify-end p-4 md:p-10 rounded-b-2xl">
                     <m.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -523,11 +523,11 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
           </CarouselContent>
 
           <CarouselPrevious 
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer rounded-full"
             onClick={prevSlide}
           />
           <CarouselNext 
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer rounded-full"
             onClick={nextSlide}
           />
         </Carousel>
