@@ -613,8 +613,8 @@ function ExpandableSection({
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
-              <CarouselNext className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-6 w-6 md:h-8 md:w-8 border-none z-10 shadow-lg cursor-pointer" />
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
             </Carousel>
           </div>
         ) : (
