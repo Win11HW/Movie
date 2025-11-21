@@ -65,7 +65,7 @@ export default function Navbar() { // Remove onSearch prop
 
       {/* Mobile Dropdown */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/10">
+        <>
           {/* Links in one row */}
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-row justify-center space-x-6">
             <Link
@@ -100,9 +100,9 @@ export default function Navbar() { // Remove onSearch prop
 
           {/* Search visible in mobile dropdown */}
           <div className="max-w-7xl mx-auto w-full px-6 pb-4">
-            <SearchBar /> {/* Remove onSearch prop */}
+            <SearchBar /> 
           </div>
-        </div>
+        </>
       )}
     </nav>
   );
