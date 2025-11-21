@@ -419,120 +419,41 @@ function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactN
 
 /* Hero Carousel Component with Auto-Sliding Only */
 function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigateToSection?: (section: string) => void }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Auto slide configuration
-  const AUTO_SLIDE_INTERVAL = 7000; // 7 seconds
-
-  // Initialize auto slide
-  useEffect(() => {
-    autoSlideRef.current = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % items.length);
-    }, AUTO_SLIDE_INTERVAL);
-
-    return () => {
-      if (autoSlideRef.current) {
-        clearInterval(autoSlideRef.current);
-      }
-    };
-  }, [items.length]);
-
-  const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % items.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + items.length) % items.length);
-  };
-
   return (
-    <LazyMotion features={domAnimation}>
-      <m.div 
-        className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden"
-        initial={{ opacity: 0, scale: 1.05 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      >
-        <Carousel 
-          opts={{ 
-            loop: true, 
-            align: "center",
-            startIndex: currentSlide
-          }} 
-          className="w-full h-full"
-        >
-          <CarouselContent style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-            {items.map((movie, index) => (
-              <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh] basis-full">
-                <m.div
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: index * 0.1,
-                    ease: "easeOut" 
-                  }}
-                  className="w-full h-full"
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                    alt={movie.title || "Movie"}
-                    className="w-full h-full object-cover brightness-75 rounded-2xl"
-                  />
+    <div className="relative w-full h-[50vh] md:h-screen rounded-2xl overflow-hidden">
+      <Carousel opts={{ loop: true, align: "center" }} className="w-full h-full">
+        <CarouselContent>
+          {items.map((movie) => (
+            <CarouselItem key={movie.id} className="relative h-[50vh] md:h-[99vh]">
+              <img
+                src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                alt={movie.title || "Movie"}
+                className="w-full h-full object-cover brightness-75"
+              />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent flex flex-col justify-end p-4 md:p-10 rounded-b-2xl">
-                    <m.div
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
-                    >
-                      <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
-                        {movie.title}
-                      </h2>
-                      <m.p 
-                        className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                      >
-                        {movie.overview}
-                      </m.p>
-                      <m.div 
-                        className="flex gap-3 md:gap-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7 + index * 0.1 }}
-                      >
-                        <Link href={`/movie/${movie.id}`}>
-                          <m.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
-                              Watch Now →
-                            </Button>
-                          </m.div>
-                        </Link>
-                      </m.div>
-                    </m.div>
-                  </div>
-                </m.div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent flex flex-col justify-end p-4 md:p-10">
+                <h2 className="text-xl md:text-3xl lg:text-5xl font-bold mb-2 md:mb-3 text-white">
+                  {movie.title}
+                </h2>
+                <p className="max-w-2xl text-xs md:text-sm lg:text-base text-gray-200 mb-3 md:mb-4 line-clamp-2 md:line-clamp-3">
+                  {movie.overview}
+                </p>
+                <div className="flex gap-3 md:gap-4">
+                  <Link href={`/movie/${movie.id}`}>
+                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full px-4 py-2 md:px-5 md:py-2 text-sm md:text-base hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg cursor-pointer">
+                      Watch Now →
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
-          <CarouselPrevious 
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer rounded-full"
-            onClick={prevSlide}
-          />
-          <CarouselNext 
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer rounded-full"
-            onClick={nextSlide}
-          />
-        </Carousel>
-      </m.div>
-    </LazyMotion>
+        <CarouselPrevious className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+        <CarouselNext className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-8 w-8 md:h-12 md:w-12 border-none z-10 shadow-lg cursor-pointer" />
+      </Carousel>
+    </div>
   );
 }
 
