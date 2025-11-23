@@ -125,12 +125,20 @@ const buttonVariants = {
   }
 };
 
+// Category mapping for navigation
+const categoryMapping: { [key: string]: string } = {
+  "trending-movies": "trending-movies",
+  "top-rated-movies": "top-rated-movies", 
+  "trending-now": "trending",
+  "trending-tv": "trending-tv",
+  "top-rated-tv": "top-rated-tv"
+};
+
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
   const [trendingTV, setTrendingTV] = useState<any[]>([]);
   const [topRatedTV, setTopRatedTV] = useState<any[]>([]);
-  const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
   const [activeSection, setActiveSection] = useState<string>("home");
   const [isLoading, setIsLoading] = useState(true);
   
@@ -161,14 +169,6 @@ export default function HomePage() {
     }
     fetchData();
   }, []);
-
-  // Make sure toggleSection is defined
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }));
-  };
 
   const handleNavigateToSection = (section: string) => {
     setActiveSection(section);
@@ -269,21 +269,17 @@ export default function HomePage() {
               animate="visible"
               exit="hidden"
             >
-              <ExpandableSection
+              <Section
                 title="Trending Movies"
                 icon={<Clapperboard className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingMovies}
                 sectionId="trending-movies"
-                isExpanded={expandedSections["trending-movies"]}
-                onToggle={() => toggleSection("trending-movies")}
               />
-              <ExpandableSection
+              <Section
                 title="Top Rated Movies"
                 icon={<Star className="w-5 h-5 md:w-6 md:h-6" />}
                 items={topRatedMovies}
                 sectionId="top-rated-movies"
-                isExpanded={expandedSections["top-rated-movies"]}
-                onToggle={() => toggleSection("top-rated-movies")}
               />
             </m.div>
           )}
@@ -300,13 +296,11 @@ export default function HomePage() {
               animate="visible"
               exit="hidden"
             >
-              <ExpandableSection
+              <Section
                 title="Trending Now"
                 icon={<Flame className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingMovies}
                 sectionId="trending-now"
-                isExpanded={expandedSections["trending-now"]}
-                onToggle={() => toggleSection("trending-now")}
               />
             </m.div>
           )}
@@ -323,21 +317,17 @@ export default function HomePage() {
               animate="visible"
               exit="hidden"
             >
-              <ExpandableSection
+              <Section
                 title="Trending TV Shows"
                 icon={<MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />}
                 items={trendingTV}
                 sectionId="trending-tv"
-                isExpanded={expandedSections["trending-tv"]}
-                onToggle={() => toggleSection("trending-tv")}
               />
-              <ExpandableSection
+              <Section
                 title="Top Rated TV Shows"
                 icon={<Trophy className="w-5 h-5 md:w-6 md:h-6" />}
                 items={topRatedTV}
                 sectionId="top-rated-tv"
-                isExpanded={expandedSections["top-rated-tv"]}
-                onToggle={() => toggleSection("top-rated-tv")}
               />
             </m.div>
           )}
@@ -373,7 +363,7 @@ export default function HomePage() {
   );
 }
 
-/* Section Placeholder Component - Exact match to ExpandableSection */
+/* Section Placeholder Component - Exact match to Section */
 function SectionPlaceholder({ title, icon }: { title: string; icon: React.ReactNode }) {
   return (
     <section className="space-y-4 md:space-y-6">
@@ -457,24 +447,21 @@ function HeroCarousel({ items, onNavigateToSection }: { items: any[], onNavigate
   );
 }
 
-/* Expandable Section Component with Framer Motion */
-function ExpandableSection({
+/* Section Component with Framer Motion - Updated to navigate to category page */
+function Section({
   title,
   icon,
   items,
   sectionId,
-  isExpanded,
-  onToggle,
 }: {
   title: string;
   icon: React.ReactNode;
   items: any[];
   sectionId: string;
-  isExpanded: boolean;
-  onToggle: () => void;
 }) {
-  // Show only 10 items in carousel view, all items in expanded view
-  const displayedItems = isExpanded ? items : items.slice(0, 10);
+  // Show only 10 items in carousel view
+  const displayedItems = items.slice(0, 10);
+  const categoryId = categoryMapping[sectionId] || sectionId;
 
   return (
     <LazyMotion features={domAnimation}>
@@ -500,64 +487,44 @@ function ExpandableSection({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
-              onClick={onToggle}
-            >
-              {isExpanded ? "Show Less ↑" : "View More →"}
-            </Button>
+            <Link href={`/category/${categoryId}`}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-white border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer"
+              >
+                View More →
+              </Button>
+            </Link>
           </m.div>
         </m.div>
 
-        {!isExpanded ? (
-          // Carousel view for collapsed state - Each card with fade-up
-          <div className="relative">
-            <Carousel opts={{ align: "start", loop: true }} className="w-full">
-              <CarouselContent>
-                {displayedItems.map((item, index) => (
-                  <CarouselItem
-                    key={item.id}
-                    className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+        {/* Carousel view - Each card with fade-up */}
+        <div className="relative">
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <CarouselContent>
+              {displayedItems.map((item, index) => (
+                <CarouselItem
+                  key={item.id}
+                  className="basis-1/2 sm:basis-1/3 md:basis-1/5 lg:basis-1/6"
+                >
+                  <m.div
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    whileHover="hover"
+                    custom={index}
                   >
-                    <m.div
-                      variants={cardVariants}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true }}
-                      whileHover="hover"
-                      custom={index}
-                    >
-                      <MovieCard {...item} />
-                    </m.div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
-            </Carousel>
-          </div>
-        ) : (
-          // Grid view for expanded state - Each card with fade-up and stagger
-          <m.div 
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            {displayedItems.map((item, index) => (
-              <m.div
-                key={item.id}
-                variants={cardVariants}
-                whileHover="hover"
-                custom={index}
-              >
-                <MovieCard {...item} />
-              </m.div>
-            ))}
-          </m.div>
-        )}
+                    <MovieCard {...item} />
+                  </m.div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-700 hover:to-cyan-700 text-white h-10 w-10 border-none z-10 shadow-lg transform hover:scale-110 transition-all duration-500" />
+          </Carousel>
+        </div>
       </m.section>
     </LazyMotion>
   );

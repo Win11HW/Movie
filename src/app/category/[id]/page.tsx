@@ -19,13 +19,14 @@ import type { Variants } from "framer-motion";
 // Icons for different categories
 import { 
   Star, 
-  Clapperboard, 
-  Tv, 
+  Trophy, 
+  MonitorPlay, 
   Flame,
   Search,
   Sword,
   Laugh,
   Drama,
+  Clapperboard,
   Skull
 } from 'lucide-react';
 
@@ -77,14 +78,14 @@ const gridItemVariants: Variants = {
   }
 };
 
-// Updated Category mapping with icons
+// Updated Category mapping with icons - Make sure this matches the sectionIds from homepage
 const categoryConfig: { [key: string]: { 
   title: string; 
   fetchFunction: () => Promise<any[]>; 
   type: string;
   icon: React.ReactNode;
 } } = {
-  // Movie categories - match navbar links
+  // Movie categories - match homepage sections
   "trending-movies": { 
     title: "Trending Movies", 
     fetchFunction: getTrendingMovies, 
@@ -98,29 +99,35 @@ const categoryConfig: { [key: string]: {
     icon: <Star className="w-5 h-5 md:w-6 md:h-6" />
   },
   
-  // TV categories - match navbar links
+  // TV categories - match homepage sections
   "trending-tv": { 
     title: "Trending TV Shows", 
     fetchFunction: getTrendingTV, 
     type: "tv",
-    icon: <Tv className="w-5 h-5 md:w-6 md:h-6" />
+    icon: <MonitorPlay className="w-5 h-5 md:w-6 md:h-6" />
   },
   "top-rated-tv": { 
     title: "Top Rated TV Shows", 
     fetchFunction: getTopRatedTV, 
     type: "tv",
-    icon: <Clapperboard className="w-5 h-5 md:w-6 md:h-6" />
+    icon: <Trophy className="w-5 h-5 md:w-6 md:h-6" />
   },
   
-  // Trending category - match navbar link
+  // Trending category - match homepage section
   "trending": { 
     title: "Trending Now", 
     fetchFunction: getTrendingMovies, 
     type: "movie",
     icon: <Flame className="w-5 h-5 md:w-6 md:h-6" />
   },
+  "trending-now": { // Add this to handle the sectionId from homepage
+    title: "Trending Now", 
+    fetchFunction: getTrendingMovies, 
+    type: "movie",
+    icon: <Flame className="w-5 h-5 md:w-6 md:h-6" />
+  },
   
-  // Genre categories - match footer links
+  // Genre categories
   "28": { 
     title: "Action Movies", 
     fetchFunction: () => getMoviesByGenre(28), 
@@ -169,7 +176,7 @@ export default function CategoryPage() {
 
   const category = categoryConfig[id];
   const displayTitle = category?.title || `Category: ${id}`;
-  const displayIcon = category?.icon || <Clapperboard className="w-5 h-5 md:w-6 md:h-6" />;
+  const displayIcon = category?.icon || <Trophy className="w-5 h-5 md:w-6 md:h-6" />;
 
   useEffect(() => {
     async function fetchCategoryData() {
