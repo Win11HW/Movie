@@ -78,14 +78,14 @@ const gridItemVariants: Variants = {
   }
 };
 
-// Updated Category mapping with icons - Make sure this matches the sectionIds from homepage
+// Category mapping with icons
 const categoryConfig: { [key: string]: { 
   title: string; 
   fetchFunction: () => Promise<any[]>; 
   type: string;
   icon: React.ReactNode;
 } } = {
-  // Movie categories - match homepage sections
+  // Movie categories
   "trending-movies": { 
     title: "Trending Movies", 
     fetchFunction: getTrendingMovies, 
@@ -99,7 +99,7 @@ const categoryConfig: { [key: string]: {
     icon: <Star className="w-5 h-5 md:w-6 md:h-6" />
   },
   
-  // TV categories - match homepage sections
+  // TV categories
   "trending-tv": { 
     title: "Trending TV Shows", 
     fetchFunction: getTrendingTV, 
@@ -113,36 +113,96 @@ const categoryConfig: { [key: string]: {
     icon: <Trophy className="w-5 h-5 md:w-6 md:h-6" />
   },
   
-  // Trending category - match homepage section
+  // Trending category
   "trending": { 
     title: "Trending Now", 
     fetchFunction: getTrendingMovies, 
     type: "movie",
     icon: <Flame className="w-5 h-5 md:w-6 md:h-6" />
   },
-  "trending-now": { // Add this to handle the sectionId from homepage
+  "trending-now": {
     title: "Trending Now", 
     fetchFunction: getTrendingMovies, 
     type: "movie",
     icon: <Flame className="w-5 h-5 md:w-6 md:h-6" />
   },
   
-  // Genre categories
+  // Genre categories by ID (matching navbar links)
   "28": { 
     title: "Action Movies", 
     fetchFunction: () => getMoviesByGenre(28), 
     type: "movie",
     icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
   },
-  "35": { 
-    title: "Comedy Movies", 
-    fetchFunction: () => getMoviesByGenre(35), 
+  "12": { 
+    title: "Adventure Movies", 
+    fetchFunction: () => getMoviesByGenre(12), 
     type: "movie",
-    icon: <Laugh className="w-5 h-5 md:w-6 md:h-6" />
+    icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "53": { 
+    title: "Thriller Movies", 
+    fetchFunction: () => getMoviesByGenre(53), 
+    type: "movie",
+    icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "80": { 
+    title: "Crime Movies", 
+    fetchFunction: () => getMoviesByGenre(80), 
+    type: "movie",
+    icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "10752": { 
+    title: "War Movies", 
+    fetchFunction: () => getMoviesByGenre(10752), 
+    type: "movie",
+    icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "37": { 
+    title: "Western Movies", 
+    fetchFunction: () => getMoviesByGenre(37), 
+    type: "movie",
+    icon: <Sword className="w-5 h-5 md:w-6 md:h-6" />
   },
   "18": { 
     title: "Drama Movies", 
     fetchFunction: () => getMoviesByGenre(18), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "10749": { 
+    title: "Romance Movies", 
+    fetchFunction: () => getMoviesByGenre(10749), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "36": { 
+    title: "History Movies", 
+    fetchFunction: () => getMoviesByGenre(36), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "10751": { 
+    title: "Family Movies", 
+    fetchFunction: () => getMoviesByGenre(10751), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "10770": { 
+    title: "TV Movies", 
+    fetchFunction: () => getMoviesByGenre(10770), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "14": { 
+    title: "Fantasy Movies", 
+    fetchFunction: () => getMoviesByGenre(14), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "878": { 
+    title: "Science Fiction Movies", 
+    fetchFunction: () => getMoviesByGenre(878), 
     type: "movie",
     icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
   },
@@ -151,6 +211,36 @@ const categoryConfig: { [key: string]: {
     fetchFunction: () => getMoviesByGenre(27), 
     type: "movie",
     icon: <Skull className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "9648": { 
+    title: "Mystery Movies", 
+    fetchFunction: () => getMoviesByGenre(9648), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "35": { 
+    title: "Comedy Movies", 
+    fetchFunction: () => getMoviesByGenre(35), 
+    type: "movie",
+    icon: <Laugh className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "16": { 
+    title: "Animation Movies", 
+    fetchFunction: () => getMoviesByGenre(16), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "10402": { 
+    title: "Music Movies", 
+    fetchFunction: () => getMoviesByGenre(10402), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
+  },
+  "99": { 
+    title: "Documentary Movies", 
+    fetchFunction: () => getMoviesByGenre(99), 
+    type: "movie",
+    icon: <Drama className="w-5 h-5 md:w-6 md:h-6" />
   },
 
   // Search category
