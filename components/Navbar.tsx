@@ -142,37 +142,49 @@ export default function Navbar() {
   // Mobile Dropdown Section Component
   const MobileDropdownSection = ({ title, items }: { title: string; items: any[] }) => {
     const [isOpen, setIsOpen] = useState(false);
-
+  
     return (
-      <div className="border-l-2 border-white/20 pl-4">
+      <div className="border-t border-white/10 pt-3">
+        {/* Header Button */}
         <button
-          className="flex items-center justify-between w-full text-white/90 text-left py-2"
+          className="flex items-center justify-between w-full py-3"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="font-medium">{title}</span>
-          <ChevronDown 
-            size={16} 
-            className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+          <span className="text-white font-medium text-base tracking-wide">
+            {title}
+          </span>
+  
+          <ChevronDown
+            size={18}
+            className={`text-white/70 transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
-        
-        {isOpen && (
-          <div className="mt-2 space-y-2">
+  
+        {/* Animated Collapse */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="pl-4 pb-3 space-y-2">
             {items.map((genre) => (
               <Link
                 key={genre.name}
                 href={genre.href}
-                className="block text-white/70 hover:text-white transition-colors duration-200 py-1 text-sm"
                 onClick={handleMobileLinkClick}
+                className="block text-white/70 hover:text-white transition-colors duration-200 text-sm py-1"
               >
                 {genre.name}
               </Link>
             ))}
           </div>
-        )}
+        </div>
       </div>
     );
   };
+  
 
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 bg-gray-900/80 border-b border-white/10">
