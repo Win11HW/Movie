@@ -155,7 +155,7 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="md:hidden bg-gray-900/80 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-4">
+          <div className="w-full px-6 py-4 space-y-4 max-h-[80vh] overflow-y-auto">
             <div className="pb-2">
               <SearchBar />
             </div>
