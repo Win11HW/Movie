@@ -151,16 +151,19 @@ export default function HomePage() {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const [trendM, topM, trendT, topT] = await Promise.all([
+        // Fetch data and extract results from response
+        const [trendMRes, topMRes, trendTRes, topTRes] = await Promise.all([
           getTrendingMovies(),
           getTopRatedMovies(),
           getTrendingTV(),
           getTopRatedTV(),
         ]);
-        setTrendingMovies(trendM);
-        setTopRatedMovies(topM);
-        setTrendingTV(trendT);
-        setTopRatedTV(topT);
+        
+        // Extract results array from each response
+        setTrendingMovies(trendMRes.results || []);
+        setTopRatedMovies(topMRes.results || []);
+        setTrendingTV(trendTRes.results || []);
+        setTopRatedTV(topTRes.results || []);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
