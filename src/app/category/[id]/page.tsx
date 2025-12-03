@@ -16,6 +16,17 @@ import {
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import type { Variants } from "framer-motion";
 
+// Import shadcn/ui components
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+
 // Icons
 import { 
   Star, 
@@ -27,11 +38,7 @@ import {
   Laugh,
   Drama,
   Clapperboard,
-  Skull,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight
+  Skull
 } from 'lucide-react';
 
 // Animation variants with proper TypeScript types
@@ -300,6 +307,9 @@ export default function CategoryPage() {
     }
   }, [pageFromUrl]);
 
+  // Suppress unused variable warning - pageFromUrl is used in the effect above
+  void pageFromUrl;
+
   useEffect(() => {
     async function fetchCategoryData() {
       try {
@@ -362,7 +372,7 @@ export default function CategoryPage() {
 
   // Generate page numbers to display
   const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
+    const pages: number[] = [];
     const maxVisiblePages = 5;
     
     if (totalPages <= maxVisiblePages) {
@@ -371,40 +381,24 @@ export default function CategoryPage() {
         pages.push(i);
       }
     } else {
-      // Always show first page
-      pages.push(1);
-      
       // Calculate start and end of visible pages
-      let start = Math.max(2, currentPage - 1);
-      let end = Math.min(totalPages - 1, currentPage + 1);
+      let start = Math.max(1, currentPage - 2);
+      let end = Math.min(totalPages, currentPage + 2);
       
       // Adjust if we're at the beginning
       if (currentPage <= 3) {
-        end = Math.min(4, totalPages - 1);
+        end = Math.min(5, totalPages);
       }
       
       // Adjust if we're at the end
       if (currentPage >= totalPages - 2) {
-        start = Math.max(totalPages - 3, 2);
-      }
-      
-      // Add ellipsis after first page if needed
-      if (start > 2) {
-        pages.push('...');
+        start = Math.max(totalPages - 4, 1);
       }
       
       // Add middle pages
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
-      
-      // Add ellipsis before last page if needed
-      if (end < totalPages - 1) {
-        pages.push('...');
-      }
-      
-      // Always show last page
-      pages.push(totalPages);
     }
     
     return pages;
@@ -415,10 +409,10 @@ export default function CategoryPage() {
     return (
       <LazyMotion features={domAnimation}>
         <div className="min-h-screen bg-gray-900 pt-10">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            {/* Loading Skeleton matching the exact structure */}
-            <section className="space-y-4 md:space-y-6">
-              <div className="flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header Section Skeleton */}
+            <section className="space-y-4 md:space-y-6 mb-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
                   <div className="flex items-center gap-2">
@@ -426,33 +420,94 @@ export default function CategoryPage() {
                     <div className="h-6 w-40 bg-gray-700 rounded animate-pulse"></div>
                   </div>
                 </div>
-                <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse border border-gray-600"></div>
-              </div>
-
-              <div className="relative">
-                <div className="flex gap-4 md:gap-6 overflow-hidden">
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
-                    <div 
-                      key={item} 
-                      className="flex-[0_0_calc(50%-8px)] sm:flex-[0_0_calc(33.333%-10px)] md:flex-[0_0_calc(20%-10px)] lg:flex-[0_0_calc(16.666%-10px)]"
-                    >
-                      <div className="group bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-gray-700/50">
-                        <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
-                          {/* Image placeholder */}
-                        </div>
-                        <div className="p-3">
-                          <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
                 
-                {/* Carousel Navigation Placeholders */}
-                <div className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 h-6 w-6 md:h-8 md:w-8 bg-gray-700 rounded-full animate-pulse border-none z-10"></div>
-                <div className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 h-6 w-6 md:h-8 md:w-8 bg-gray-700 rounded-full animate-pulse border-none z-10"></div>
+                {/* Page Count Skeleton */}
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse border border-gray-600"></div>
+                  <div className="h-8 w-24 bg-gray-700 rounded-full animate-pulse border border-gray-600"></div>
+                </div>
               </div>
             </section>
+
+            {/* Grid Skeleton - 5 cards per row on lg screens */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 mb-8">
+              {/* First row - 5 cards */}
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div key={item}>
+                  <div className="group bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-gray-700/50">
+                    <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
+                      {/* Image placeholder */}
+                    </div>
+                    <div className="p-3">
+                      <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Second row - 5 cards */}
+              {[6, 7, 8, 9, 10].map((item) => (
+                <div key={item}>
+                  <div className="group bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-gray-700/50">
+                    <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
+                      {/* Image placeholder */}
+                    </div>
+                    <div className="p-3">
+                      <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Third row - 5 cards (for total of 15 cards like the actual grid) */}
+              {[11, 12, 13, 14, 15].map((item) => (
+                <div key={item}>
+                  <div className="group bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl border border-gray-700/50">
+                    <div className="aspect-[2/3] relative overflow-hidden bg-gray-700 animate-pulse">
+                      {/* Image placeholder */}
+                    </div>
+                    <div className="p-3">
+                      <div className="h-4 bg-gray-700 rounded animate-pulse mb-2"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Skeleton at the bottom */}
+            <div className="flex flex-col items-center justify-center gap-4 py-6 border-t border-gray-700/50">
+              {/* Mobile Pagination Skeleton */}
+              <div className="sm:hidden w-full">
+                <div className="flex justify-between items-center w-full">
+                  <div className="h-10 w-24 bg-gray-700 rounded-lg animate-pulse"></div>
+                  <div className="flex flex-col items-center">
+                    <div className="h-4 w-20 bg-gray-700 rounded animate-pulse mb-1"></div>
+                    <div className="h-3 w-24 bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-10 w-24 bg-gray-700 rounded-lg animate-pulse"></div>
+                </div>
+              </div>
+
+              {/* Desktop Pagination Skeleton */}
+              <div className="hidden sm:block">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-24 bg-gray-700 rounded-lg animate-pulse"></div>
+                  
+                  {/* Page numbers skeleton */}
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 bg-gray-700 rounded-lg animate-pulse"></div>
+                    <div className="h-10 w-10 bg-gray-800 rounded-lg animate-pulse"></div>
+                    <div className="h-10 w-10 bg-gray-700 rounded-lg animate-pulse"></div>
+                    <div className="h-10 w-10 bg-gray-700 rounded-lg animate-pulse"></div>
+                    <div className="h-10 w-10 bg-gray-700 rounded-lg animate-pulse"></div>
+                    <div className="h-6 w-6 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-10 w-10 bg-gray-700 rounded-lg animate-pulse"></div>
+                  </div>
+                  
+                  <div className="h-10 w-24 bg-gray-700 rounded-lg animate-pulse"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </LazyMotion>
@@ -568,111 +623,148 @@ export default function CategoryPage() {
                 ))}
               </m.div>
 
-              {/* Pagination Component */}
+              {/* Shadcn Pagination Component */}
               {totalPages > 1 && (
                 <m.div 
-                  className="flex flex-col sm:flex-row items-center justify-center gap-4 py-6 border-t border-gray-700/50"
+                  className="flex flex-col items-center justify-center gap-4 py-6 border-t border-gray-700/50"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
                   {/* Mobile: Simple Previous/Next */}
-                  <div className="flex sm:hidden items-center justify-between w-full">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      Previous
-                    </button>
-                    
-                    <div className="flex flex-col items-center">
-                      <span className="text-sm text-white/60">
-                        Page {currentPage} of {totalPages}
-                      </span>
-                      <span className="text-xs text-white/40">
-                        {totalResults.toLocaleString()} total
-                      </span>
-                    </div>
-                    
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    >
-                      Next
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                  <div className="sm:hidden w-full">
+                    <Pagination>
+                      <PaginationContent className="flex justify-between w-full">
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            isActive={currentPage > 1}
+                            className={`cursor-pointer ${
+                              currentPage > 1 
+                                ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white hover:from-blue-600 hover:to-cyan-600' 
+                                : ''
+                            }`}
+                          />
+                        </PaginationItem>
+                        
+                        <div className="flex flex-col items-center">
+                          <span className="text-sm text-white/60">
+                            Page {currentPage} of {totalPages}
+                          </span>
+                          <span className="text-xs text-white/40">
+                            {totalResults.toLocaleString()} total
+                          </span>
+                        </div>
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            isActive={currentPage < totalPages}
+                            className={`cursor-pointer ${
+                              currentPage < totalPages 
+                                ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white hover:from-blue-600 hover:to-cyan-600' 
+                                : ''
+                            }`}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
                   </div>
 
                   {/* Desktop: Full Pagination */}
-                  <div className="hidden sm:flex items-center justify-center w-full">
-                    {/* Page navigation */}
-                    <div className="flex items-center gap-1">
-                      {/* First Page */}
-                      <button
-                        onClick={() => handlePageChange(1)}
-                        disabled={currentPage === 1}
-                        className="p-2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
-                        title="First Page"
-                      >
-                        <ChevronsLeft className="w-5 h-5" />
-                      </button>
-
-                      {/* Previous Page */}
-                      <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/60 hover:text-white bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                        Previous
-                      </button>
-
-                      {/* Page Numbers */}
-                      <div className="flex items-center gap-1 mx-2">
-                        {getPageNumbers().map((pageNum, index) => (
-                          pageNum === '...' ? (
-                            <span key={`ellipsis-${index}`} className="px-2 py-1 text-white/40">
-                              ...
-                            </span>
-                          ) : (
-                            <button
-                              key={pageNum}
-                              onClick={() => handlePageChange(pageNum as number)}
-                              className={`min-w-[2.5rem] px-2 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                                currentPage === pageNum
-                                  ? 'bg-blue-600 text-white'
-                                  : 'text-white/60 hover:text-white hover:bg-white/5'
-                              }`}
+                  <div className="hidden sm:block">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            isActive={currentPage > 1}
+                            className={`cursor-pointer ${
+                              currentPage > 1 
+                                ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white hover:from-blue-600 hover:to-cyan-600 hover:shadow-lg hover:shadow-blue-500/20' 
+                                : 'opacity-50 cursor-not-allowed'
+                            } transition-all duration-200`}
+                          />
+                        </PaginationItem>
+                        
+                        {/* First Page */}
+                        {currentPage > 3 && totalPages > 5 && (
+                          <>
+                            <PaginationItem>
+                              <PaginationLink 
+                                onClick={() => handlePageChange(1)}
+                                isActive={currentPage === 1}
+                                className={`cursor-pointer ${
+                                  currentPage === 1 
+                                    ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white shadow-lg shadow-blue-500/20' 
+                                    : 'hover:bg-white/10'
+                                } transition-all duration-200`}
+                              >
+                                1
+                              </PaginationLink>
+                            </PaginationItem>
+                            {currentPage > 4 && (
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )}
+                          </>
+                        )}
+                        
+                        {/* Middle Pages */}
+                        {getPageNumbers().map((pageNum) => (
+                          <PaginationItem key={pageNum}>
+                            <PaginationLink 
+                              onClick={() => handlePageChange(pageNum)}
+                              isActive={currentPage === pageNum}
+                              className={`cursor-pointer ${
+                                currentPage === pageNum 
+                                  ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white shadow-lg shadow-blue-500/20' 
+                                  : 'hover:bg-white/10'
+                              } transition-all duration-200`}
                             >
                               {pageNum}
-                            </button>
-                          )
+                            </PaginationLink>
+                          </PaginationItem>
                         ))}
-                      </div>
-
-                      {/* Next Page */}
-                      <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/60 hover:text-white bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                      >
-                        Next
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-
-                      {/* Last Page */}
-                      <button
-                        onClick={() => handlePageChange(totalPages)}
-                        disabled={currentPage === totalPages}
-                        className="p-2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
-                        title="Last Page"
-                      >
-                        <ChevronsRight className="w-5 h-5" />
-                      </button>
-                    </div>
+                        
+                        {/* Last Page */}
+                        {currentPage < totalPages - 2 && totalPages > 5 && (
+                          <>
+                            {currentPage < totalPages - 3 && (
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )}
+                            <PaginationItem>
+                              <PaginationLink 
+                                onClick={() => handlePageChange(totalPages)}
+                                isActive={currentPage === totalPages}
+                                className={`cursor-pointer ${
+                                  currentPage === totalPages 
+                                    ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white shadow-lg shadow-blue-500/20' 
+                                    : 'hover:bg-white/10'
+                                } transition-all duration-200`}
+                              >
+                                {totalPages}
+                              </PaginationLink>
+                            </PaginationItem>
+                          </>
+                        )}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            isActive={currentPage < totalPages}
+                            className={`cursor-pointer ${
+                              currentPage < totalPages 
+                                ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white hover:from-blue-600 hover:to-cyan-600 hover:shadow-lg hover:shadow-blue-500/20' 
+                                : 'opacity-50 cursor-not-allowed'
+                            } transition-all duration-200`}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
                   </div>
                 </m.div>
               )}
