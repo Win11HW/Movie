@@ -465,6 +465,8 @@ function Section({
   // Show only 10 items in carousel view
   const displayedItems = items.slice(0, 10);
   const categoryId = categoryMapping[sectionId] || sectionId;
+  // Determine if this is a TV section based on sectionId
+  const isTVSection = sectionId.includes("tv") || sectionId === "trending-tv" || sectionId === "top-rated-tv";
 
   return (
     <LazyMotion features={domAnimation}>
@@ -519,7 +521,7 @@ function Section({
                     whileHover="hover"
                     custom={index}
                   >
-                    <MovieCard {...item} />
+                    <MovieCard {...item} type={isTVSection ? "tv" : "movie"} />
                   </m.div>
                 </CarouselItem>
               ))}
